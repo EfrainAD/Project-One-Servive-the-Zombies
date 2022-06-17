@@ -41,12 +41,12 @@ message "guns can kill at any distense, but are loud and will attrack every zomm
 
 he will runinot a zoombei wiht a key. The Zilda musie for when you get an idiam will play, and "Great, now I can get out of here."
 
-![](Image Project-One-img/Project-One-img-1.jpg)
-![](Image Project-One-img/Project-One-img-2.jpg)
-![](Image Project-One-img/Project-One-img-3.jpg)
-![](Image Project-One-img/Project-One-img-4.jpg)
-![](Image Project-One-img/Project-One-img-5.jpg)
-![](Image Project-One-img/Project-One-img-6.jpg)
+![](Project-One-img/Project-One-img-1.jpg)
+![](Project-One-img/Project-One-img-2.jpg)
+![](Project-One-img/Project-One-img-3.jpg)
+![](Project-One-img/Project-One-img-4.jpg)
+![](Project-One-img/Project-One-img-5.jpg)
+![](Project-One-img/Project-One-img-6.jpg)
 //Test
 
 How to do this
