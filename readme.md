@@ -49,6 +49,7 @@ he will runinot a zoombei wiht a key. The Zilda musie for when you get an idiam 
 ![Image 6](planner/Project-One-img/Project-One-img-6.jpg)
 //Test
 
+```
 How to do this
 //Map
     // Map with be randomized at least for the start. If I choose to keep it that way or it genirates a map I think is good.
@@ -102,3 +103,4 @@ building/trees
     //will stop sites the just note that these need be set into the move function.
 Key
     //This will not be attached to a zoombie. it will show up when the kill counter hit kill goal that the player will not be awair of. it will grab the location and spown there. should be in a function zombie dies.
+```
