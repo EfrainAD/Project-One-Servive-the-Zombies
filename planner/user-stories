@@ -1,0 +1,25 @@
+Game starts with zombie getting another person and a figure feeling out of view.
+The view changes to him and says "They are here, Lewie told me about them, and he's gone!"
+
+Then a view of player status show up.
+Health: Alive
+double-barreled rifle: 0
+machete: 0 //I am just calling this a knife from here.
+
+WARNING: zombes can hear, and they are the dead rising up!
+
+First time Player? <checkboxs>
+Press any key to continue
+
+cd seen "Servive"
+
+cd Playmap.
+
+Map will show zombies, machete, buildings and many grave stones. A message block will show up, "I need a weapen, or if one sees me I am a goner"
+
+When he gets the knife two messages "Zobies can only be killed from the back or sides with this. press SPACEBAR to swing. *animation swing* "Now I need find who died and became of these things with the key out!"
+
+When he walks buy a grave it moves make noise and one brakes out of it. and targets the user.
+
+user need brake sight from the zoombie while not running into another one.
+

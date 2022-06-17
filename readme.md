@@ -1,0 +1,1 @@
+This is a zoombie game about serviving by hiding and taking out the zoombie before they eat you.
