@@ -2,6 +2,8 @@ const game = document.getElementById('canvas')
 const messageBoard = document.getElementById('movement')
 let killCount = 0
 const playerSpeed = 8
+const spriteHeight = 25
+const spriteWidth = 20
 
 // we also need to define our game context
 const ctx = game.getContext('2d')
@@ -31,10 +33,13 @@ class Crawler {
     }
 }
 //Make players on the board.
-let player = new Crawler(10, 10, 'lightsteelblue', 16, 16)
+let player = new Crawler(30, 30, 'lightsteelblue', spriteWidth, spriteHeight)
 let ogre = []
 for (let i = 0; i < 5; i++){
-    ogre.push(new Crawler(Math.floor(Math.random()*game.width), Math.floor(Math.random()*game.height), '#bada55', 32, 48))
+    ogre.push(new Crawler(
+        Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
+        Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
+        '#bada55', spriteWidth, spriteHeight))
 }
 
 // MAIN FUNCTION \\
