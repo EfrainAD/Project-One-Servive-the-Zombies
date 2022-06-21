@@ -16,13 +16,15 @@ console.log('this is the canvas width', game.width)
 console.log('this is the canvas height', game.height)
 
 // Objects are made of properties(K:v pairs) and methods(functions)
-class Crawler {
-    constructor(x, y, color, width, height) {
+class Sprite {
+    constructor(x, y, direction, color, width, height) {
         this.x = x,
         this.y = y,
         this.color = color,
         this.width = width,
         this.height = height,
+        //Later add if direction 0 randomize it.
+        this.direction = 'up' //'up' 'donw' 'right' 'left'
         
         this.alive = true,
         //methods
@@ -33,13 +35,13 @@ class Crawler {
     }
 }
 //Make players on the board.
-let player = new Crawler(30, 30, 'lightsteelblue', spriteWidth, spriteHeight)
-let ogre = []
+let player = new Sprite(30, 30, 'up', 'lightsteelblue', spriteWidth, spriteHeight)
+let zombie = []
 for (let i = 0; i < 5; i++){
-    ogre.push(new Crawler(
+    zombie.push(new Sprite(
         Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
         Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
-        '#bada55', spriteWidth, spriteHeight))
+        'right', '#bada55', spriteWidth, spriteHeight))
 }
 
 // MAIN FUNCTION \\
@@ -55,9 +57,9 @@ const gameLoop = () => {
         player.render()
     }
 
-    ogre.forEach(ogre => {
-        if (ogre.alive === true) {
-            ogre.render()
+    zombie.forEach(zombie => {
+        if (zombie.alive === true) {
+            zombie.render()
         }
     })
 }
@@ -103,13 +105,13 @@ const movementHandler = (e) => {
     }
 }
 const detectHit = () => {
-    ogre.forEach(ogre => {
-        if (player.x < ogre.x + ogre.width
-            && player.x + player.width > ogre.x
-            && player.y < ogre.y + ogre.height
-            && player.y + player.height > ogre.y) {
-            if (ogre.alive === true) {
-                ogre.alive = false
+    zombie.forEach(zombie => {
+        if (player.x < zombie.x + zombie.width
+            && player.x + player.width > zombie.x
+            && player.y < zombie.y + zombie.height
+            && player.y + player.height > zombie.y) {
+            if (zombie.alive === true) {
+                zombie.alive = false
                 killCount++ 
             }
         }
