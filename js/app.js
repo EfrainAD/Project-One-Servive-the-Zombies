@@ -68,28 +68,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
-    // w = 87, a = 65, s = 83, d = 68
-    // up=38, down=40, left=37, right=39
-    switch (e.keyCode) {
-        case (87):
-        case (38):
+    
+    //boundery
+    console.log(e.key)
+    switch (e.key) {
+        case ('w'):
+        case ('ArrowUp'):
             // this moves player up
             player.y -= playerSpeed
             // we also need to break the case
             break
-        case (65):
-        case (37):
+        case ('a'):
+        case ('ArrowLeft'):
         // case (40):
             // this moves the player left
             player.x -= playerSpeed
             break
-        case (83):
-        case (40):
+        case ('s'):
+        case ('ArrowDown'):
             // this will move the player down
             player.y += playerSpeed
             break
-        case (68):
-        case (39):
+        case ('d'):
+        case ('ArrowRight'):
             // this moves the player to the right
             player.x += playerSpeed
             break
@@ -102,9 +103,23 @@ const detectHit = () => {
             && player.x + player.width > ogre.x
             && player.y < ogre.y + ogre.height
             && player.y + player.height > ogre.y) {
-                ogre.alive = false
+                if (ogre.alive === true) {
+                    ogre.alive = false
+                    killCount++
+                }
+               
                 //killCount++
                 // document.getElementById('status').textContent = 'You Win!'
             }
     })
+}
+const bounderies = () => {
+    if (player.x < ogre.x + ogre.width
+        && player.x + player.width > ogre.x
+        && player.y < ogre.y + ogre.height
+        && player.y + player.height > ogre.y) {
+            ogre.alive = false
+            //killCount++
+            // document.getElementById('status').textContent = 'You Win!'
+        }
 }
