@@ -69,28 +69,31 @@ setInterval(gameLoop, 60)
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
     //boundery
-    console.log(e.key)
+    // console.log(e.key)
     switch (e.key) {
         case ('w'):
         case ('ArrowUp'):
-            // this moves player up
-            player.y -= playerSpeed
+            if (bounderies(e.key)){player.y -= playerSpeed}
+                
             break
         case ('a'):
         case ('ArrowLeft'):
         // case (40):
             // this moves the player left
-            player.x -= playerSpeed
+            if (bounderies(e.key))
+                player.x -= playerSpeed
             break
         case ('s'):
         case ('ArrowDown'):
             // this will move the player down
-            player.y += playerSpeed
+            if (bounderies(e.key))
+                player.y += playerSpeed
             break
         case ('d'):
         case ('ArrowRight'):
             // this moves the player to the right
-            player.x += playerSpeed
+            if (bounderies(e.key))
+                player.x += playerSpeed
             break
     }
 }
@@ -107,14 +110,18 @@ const detectHit = () => {
         }
     })
 }
-
-const bounderies = () => {
-    if (player.x < ogre.x + ogre.width
-        && player.x + player.width > ogre.x
-        && player.y < ogre.y + ogre.height
-        && player.y + player.height > ogre.y) {
-            ogre.alive = false
-            //killCount++
-            // document.getElementById('status').textContent = 'You Win!'
-        }
+// Will think about adding asdw keys.
+const bounderies = (key) => {
+    console.log(`Player.x: ${player.x} game.width: ${game.width}`)
+    if (key === 'ArrowLeft' && player.x - playerSpeed < 0){
+        console.log(player.x + " game.width"+game.width)
+        return false 
+    }    
+    if (key === 'ArrowRight' && player.x + playerSpeed + player.width > game.width)
+        return false
+    if (key === 'ArrowUp' && player.y - playerSpeed < 0)
+        return false
+    if (key === 'ArrowDown' && player.y + playerSpeed + player.height > game.height)
+        return false
+    return true
 }
