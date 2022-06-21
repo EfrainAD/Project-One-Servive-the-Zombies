@@ -61,14 +61,13 @@ const gameLoop = () => {
 // we're going to do this, when the content loads
 document.addEventListener('DOMContentLoaded', function () {
     // in here, we need to have our movement handler
-    document.addEventListener('keydown', movementHandler)
+document.addEventListener('keydown', movementHandler)
     // we also need our game loop running at an interval
-    setInterval(gameLoop, 60)
+setInterval(gameLoop, 60)
 })
 
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
-    
     //boundery
     console.log(e.key)
     switch (e.key) {
@@ -76,7 +75,6 @@ const movementHandler = (e) => {
         case ('ArrowUp'):
             // this moves player up
             player.y -= playerSpeed
-            // we also need to break the case
             break
         case ('a'):
         case ('ArrowLeft'):
@@ -95,7 +93,6 @@ const movementHandler = (e) => {
             player.x += playerSpeed
             break
     }
-
 }
 const detectHit = () => {
     ogre.forEach(ogre => {
@@ -103,16 +100,14 @@ const detectHit = () => {
             && player.x + player.width > ogre.x
             && player.y < ogre.y + ogre.height
             && player.y + player.height > ogre.y) {
-                if (ogre.alive === true) {
-                    ogre.alive = false
-                    killCount++
-                }
-               
-                //killCount++
-                // document.getElementById('status').textContent = 'You Win!'
+            if (ogre.alive === true) {
+                ogre.alive = false
+                killCount++ 
             }
+        }
     })
 }
+
 const bounderies = () => {
     if (player.x < ogre.x + ogre.width
         && player.x + player.width > ogre.x
