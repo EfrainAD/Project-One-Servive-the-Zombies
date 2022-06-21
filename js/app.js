@@ -20,11 +20,10 @@ class Sprite {
     constructor(x, y, direction, color, width, height) {
         this.x = x,
         this.y = y,
+        this.direction = direction
         this.color = color,
         this.width = width,
-        this.height = height,
-        //Later add if direction 0 randomize it.
-        this.direction = 'up' //'up' 'donw' 'right' 'left'
+        this.height = height
         
         this.alive = true,
         //methods
@@ -72,6 +71,18 @@ document.addEventListener('keydown', movementHandler)
     // we also need our game loop running at an interval
 setInterval(gameLoop, 60)
 })
+
+const knifeSwing = () => {
+    //detect direction
+    if (((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)) {
+        
+    }
+        //dection range
+            //is/if swing in range
+                //kill
+
+    //Note move kill to it's on function to keep things dry.
+}
 
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
@@ -132,3 +143,13 @@ const bounderies = (key) => {
         return false
     return true
 }
+const convertDirectionNumber = (sprite) => {
+    if (sprite.direction === 'up')
+        return 1
+    if (sprite.direction === 'right')
+        return 2
+    if (sprite.direction === 'down')
+        return 3
+    if (sprite.direction === 'left')
+        return 4
+} 
