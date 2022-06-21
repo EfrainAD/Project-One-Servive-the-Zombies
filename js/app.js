@@ -72,19 +72,24 @@ const movementHandler = (e) => {
     // up=38, down=40, left=37, right=39
     switch (e.keyCode) {
         case (87):
+        case (38):
             // this moves player up
             player.y -= playerSpeed
             // we also need to break the case
             break
         case (65):
+        case (37):
+        // case (40):
             // this moves the player left
             player.x -= playerSpeed
             break
         case (83):
+        case (40):
             // this will move the player down
             player.y += playerSpeed
             break
         case (68):
+        case (39):
             // this moves the player to the right
             player.x += playerSpeed
             break
