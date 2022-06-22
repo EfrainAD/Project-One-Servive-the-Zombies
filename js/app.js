@@ -1,9 +1,12 @@
+const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
 const messageBoard = document.getElementById('movement')
 let killCount = 0
 const playerSpeed = 8
 const spriteHeight = 25
 const spriteWidth = 20
+const swingRange = spriteHeight + 10
+const knifeRange = 20
 
 // we also need to define our game context
 const ctx = game.getContext('2d')
@@ -34,7 +37,7 @@ class Sprite {
     }
 }
 //Make players on the board.
-let player = new Sprite(30, 30, 'up', 'lightsteelblue', spriteWidth, spriteHeight)
+let player = new Sprite(30, 30, 'right', 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
 for (let i = 0; i < 5; i++){
     zombie.push(new Sprite(
@@ -54,7 +57,7 @@ const gameLoop = () => {
 
     if (player.alive === true) {
         player.render()
-    }
+    } 
 
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
@@ -74,9 +77,64 @@ setInterval(gameLoop, 60)
 
 const knifeSwing = () => {
     //detect direction
-    if (((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)) {
+    let zombieSearch = []
+    zombieSearch = zombie.filter(zombie => {
+        return zombie.alive === true
+    }).filter(zombie => {
+        return ((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)
+    })
+    // zombieSearch.forEach(()=>{console.log("ok")})
+    // console.log("Singing in the start of the knifeSwing")
+    
+        // console.log("Singing after if direction!")
+        //player.direction                 2+2 2
+        //switch for each                       1/4 
+        //hitbar based on hit detection
+        p("player.Direction: " + player.direction)
         
-    }
+        switch (player.direction) {
+            
+            case 'up':
+                
+                break;
+            case 'right':
+                zombieSearch.forEach(zombie => {
+                    p("----stats------")
+                    p('PlayerX: ' + player.x)
+                    p('spriteX: ' + spriteWidth)
+                    p('PlayerX plus spriteWidth: ' + (player.x + spriteWidth))
+                    p('knifeRange: ' + knifeRange)
+                    p('PlayerX plus spriteWidth and knifeRange: ' + ((player.x + spriteWidth) + knifeRange))
+                    p('ZombieX: ' + zombie.x)
+                    p("is this x numbers < then zombie x?")
+                    p(' ')
+                    
+                    if ((((player.x + spriteWidth)) < zombie.x )
+                        && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
+                        && ((player.y + spriteHeight) > zombie.y)
+                        && (player.y < (zombie.y + spriteHeight)))
+                        {
+                            killZombie(zombie)
+                        }
+                        
+                    // && (player.y + (spriteHeight/4)) < (zombie.y + spriteHeight)
+                    // && ((player.y + spriteHeight) - spriteHeight/4) > (zombie.y) )
+                    // {
+                    //     console.log('HITTTTTTTTTTT')
+                    //     zombie.alive = false
+                    //     counter++ }
+                })
+                break;
+            case 'down':
+                
+                break;
+            default:
+
+                break;
+        }
+            // (player.x + spriteWidth/4) ((player.x + spriteWidth) - (spriteWidth/4)) 
+                //if yes kill.
+    
         //dection range
             //is/if swing in range
                 //kill
@@ -113,26 +171,33 @@ const movementHandler = (e) => {
             if (bounderies(e.key))
                 player.x += playerSpeed
             break
+        case (' '): //spacebar
+            console.log("sing!!!!")
+            knifeSwing()
+            break
     }
 }
 const detectHit = () => {
-    zombie.forEach(zombie => {
+    zombie.filter(zombie => {
+        return zombie.alive === true
+    }).forEach(zombie => {
         if (player.x < zombie.x + zombie.width
             && player.x + player.width > zombie.x
             && player.y < zombie.y + zombie.height
             && player.y + player.height > zombie.y) {
-            if (zombie.alive === true) {
-                zombie.alive = false
-                killCount++ 
-            }
+            player.alive = false
         }
     })
 }
+const killZombie = zombie => {
+    zombie.alive = false
+    killCount++ 
+} 
 // Will think about adding asdw keys.
 const bounderies = (key) => {
-    console.log(`Player.x: ${player.x} game.width: ${game.width}`)
+    // console.log(`Player.x: ${player.x} game.width: ${game.width}`)
     if (key === 'ArrowLeft' && player.x - playerSpeed < 0){
-        console.log(player.x + " game.width"+game.width)
+        // console.log(player.x + " game.width"+game.width)
         return false 
     }    
     if (key === 'ArrowRight' && player.x + playerSpeed + player.width > game.width)
@@ -145,11 +210,11 @@ const bounderies = (key) => {
 }
 const convertDirectionNumber = (sprite) => {
     if (sprite.direction === 'up')
-        return 1
+        return 0
     if (sprite.direction === 'right')
-        return 2
+        return 1
     if (sprite.direction === 'down')
-        return 3
+        return 2
     if (sprite.direction === 'left')
-        return 4
+        return 3
 } 
