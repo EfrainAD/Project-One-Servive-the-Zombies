@@ -34,8 +34,13 @@ class Sprite {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y, this.width, this.height)
         }
+        this.changeDirection = function(direction) {
+            this.direction = direction
+        } 
     }
+
 }
+
 //Make players on the board.
 let player = new Sprite(100, game.height/2, 'up', 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
@@ -86,7 +91,6 @@ const knifeSwing = () => {
     }).filter(zombie => {
         return ((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)
     })
-
         p("player.Direction: " + player.direction)
         switch (player.direction) {
             case 'up':
@@ -136,27 +140,34 @@ const movementHandler = (e) => {
     switch (e.key) {
         case ('w'):
         case ('ArrowUp'):
-            if (bounderies(e.key)){player.y -= playerSpeed}
-                
+            if (bounderies(e.key)){
+                player.changeDirection('up')
+                player.y -= playerSpeed
+            }    
             break
         case ('a'):
         case ('ArrowLeft'):
         // case (40):
             // this moves the player left
-            if (bounderies(e.key))
+            if (bounderies(e.key)){
+                player.changeDirection('left')
                 player.x -= playerSpeed
+            }
             break
         case ('s'):
         case ('ArrowDown'):
-            // this will move the player down
-            if (bounderies(e.key))
+            if (bounderies(e.key)){
+                player.changeDirection('down')
                 player.y += playerSpeed
+            }
             break
         case ('d'):
         case ('ArrowRight'):
             // this moves the player to the right
-            if (bounderies(e.key))
+            if (bounderies(e.key)){
+                player.changeDirection('right')
                 player.x += playerSpeed
+            }
             break
         case (' '): //spacebar
             // console.log("sing!!!!")
