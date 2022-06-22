@@ -37,14 +37,18 @@ class Sprite {
     }
 }
 //Make players on the board.
-let player = new Sprite(30, 30, 'right', 'lightsteelblue', spriteWidth, spriteHeight)
+let player = new Sprite(100, game.height/2, 'left', 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
-for (let i = 0; i < 5; i++){
+for (let i = 0; i < 1; i++){
+    // zombie.push(new Sprite(
+    //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
+    //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
+    //     'up', '#bada55', spriteWidth, spriteHeight))
     zombie.push(new Sprite(
-        Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
-        Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
-        'right', '#bada55', spriteWidth, spriteHeight))
-}
+        (game.width/6), 
+        (game.height/2), 
+        'up', '#bada55', spriteWidth, spriteHeight))
+} //TODO NOTE need check if face each other player can't knife.
 
 // MAIN FUNCTION \\
 const gameLoop = () => {
@@ -98,16 +102,16 @@ const knifeSwing = () => {
                 
                 break;
             case 'right':
-                zombieSearch.forEach(zombie => {
-                    p("----stats------")
-                    p('PlayerX: ' + player.x)
-                    p('spriteX: ' + spriteWidth)
-                    p('PlayerX plus spriteWidth: ' + (player.x + spriteWidth))
-                    p('knifeRange: ' + knifeRange)
-                    p('PlayerX plus spriteWidth and knifeRange: ' + ((player.x + spriteWidth) + knifeRange))
-                    p('ZombieX: ' + zombie.x)
-                    p("is this x numbers < then zombie x?")
-                    p(' ')
+                zombieSearch.forEach(zombie => { //COMPLETE
+                    // p("----stats------")
+                    // p('PlayerX: ' + player.x)
+                    // p('spriteX: ' + spriteWidth)
+                    // p('PlayerX plus spriteWidth: ' + (player.x + spriteWidth))
+                    // p('knifeRange: ' + knifeRange)
+                    // p('PlayerX plus spriteWidth and knifeRange: ' + ((player.x + spriteWidth) + knifeRange))
+                    // p('ZombieX: ' + zombie.x)
+                    // p("is this x numbers < then zombie x?")
+                    // p(' ')
                     
                     if ((((player.x + spriteWidth)) < zombie.x )
                         && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
@@ -116,20 +120,44 @@ const knifeSwing = () => {
                         {
                             killZombie(zombie)
                         }
-                        
-                    // && (player.y + (spriteHeight/4)) < (zombie.y + spriteHeight)
-                    // && ((player.y + spriteHeight) - spriteHeight/4) > (zombie.y) )
-                    // {
-                    //     console.log('HITTTTTTTTTTT')
-                    //     zombie.alive = false
-                    //     counter++ }
                 })
                 break;
             case 'down':
                 
                 break;
             default:
-
+                p("left swing!")
+                zombieSearch.forEach(zombie => {
+                
+                 p("----stats------")
+                    p('PlayerX: ' + player.x)
+                    p('ZombieXH: ' + (zombie.x + spriteWidth))
+                    p("is playerX > ZombieXH?")
+                    // p('spriteX: ' + spriteWidth)
+                    // p('PlayerX plus spriteWidth: ' + (player.x + spriteWidth))
+                    // p('knifeRange: ' + knifeRange)
+                    p('PlayerX knifeRange: ' + ((player.x) - knifeRange))
+                    p('ZombieXH: ' + (zombie.x + spriteWidth))
+                    p('Is Playerknife range < then zombie xh?')
+                    // p('PlayerX plus knifeRange: ' + ((player.x) + knifeRange))
+                    p('ZombieX: ' + zombie.x)
+                    p("is this x numbers < then zombie x?")
+                    p(' ')
+                    if (((player.x)) > (zombie.x + spriteWidth) )
+                        p('true')
+                    if ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
+                        p('true')
+                    if ((player.y + spriteHeight) < zombie.y)
+                        p('true')
+                        
+                if ((((player.x)) > (zombie.x + spriteWidth) )
+                    && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
+                    && ((player.y + spriteHeight) > zombie.y)
+                    && (player.y < (zombie.y + spriteHeight)))
+                    {
+                        killZombie(zombie)
+                    }
+                })
                 break;
         }
             // (player.x + spriteWidth/4) ((player.x + spriteWidth) - (spriteWidth/4)) 
@@ -172,7 +200,7 @@ const movementHandler = (e) => {
                 player.x += playerSpeed
             break
         case (' '): //spacebar
-            console.log("sing!!!!")
+            // console.log("sing!!!!")
             knifeSwing()
             break
     }
