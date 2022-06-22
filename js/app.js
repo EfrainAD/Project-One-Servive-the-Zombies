@@ -37,7 +37,7 @@ class Sprite {
     }
 }
 //Make players on the board.
-let player = new Sprite(100, game.height/2, 'left', 'lightsteelblue', spriteWidth, spriteHeight)
+let player = new Sprite(100, game.height/2, 'up', 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
 for (let i = 0; i < 1; i++){
     // zombie.push(new Sprite(
@@ -47,7 +47,7 @@ for (let i = 0; i < 1; i++){
     zombie.push(new Sprite(
         (game.width/6), 
         (game.height/2), 
-        'up', '#bada55', spriteWidth, spriteHeight))
+        'right', '#bada55', spriteWidth, spriteHeight))
 } //TODO NOTE need check if face each other player can't knife.
 
 // MAIN FUNCTION \\
@@ -80,94 +80,53 @@ setInterval(gameLoop, 60)
 })
 
 const knifeSwing = () => {
-    //detect direction
     let zombieSearch = []
     zombieSearch = zombie.filter(zombie => {
         return zombie.alive === true
     }).filter(zombie => {
         return ((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)
     })
-    // zombieSearch.forEach(()=>{console.log("ok")})
-    // console.log("Singing in the start of the knifeSwing")
-    
-        // console.log("Singing after if direction!")
-        //player.direction                 2+2 2
-        //switch for each                       1/4 
-        //hitbar based on hit detection
+
         p("player.Direction: " + player.direction)
-        
         switch (player.direction) {
-            
             case 'up':
-                
+                zombieSearch.forEach(zombie => {
+                    if ((((player.x)) < (zombie.x + spriteWidth) )  
+                    && ((((player.x) + spriteWidth)) > (zombie.x))
+                    && ((player.y + spriteHeight) > zombie.y)
+                    && ((player.y - knifeRange) < (zombie.y + spriteHeight)))
+                        killZombie(zombie)
+                    })
                 break;
             case 'right':
-                zombieSearch.forEach(zombie => { //COMPLETE
-                    // p("----stats------")
-                    // p('PlayerX: ' + player.x)
-                    // p('spriteX: ' + spriteWidth)
-                    // p('PlayerX plus spriteWidth: ' + (player.x + spriteWidth))
-                    // p('knifeRange: ' + knifeRange)
-                    // p('PlayerX plus spriteWidth and knifeRange: ' + ((player.x + spriteWidth) + knifeRange))
-                    // p('ZombieX: ' + zombie.x)
-                    // p("is this x numbers < then zombie x?")
-                    // p(' ')
-                    
+                zombieSearch.forEach(zombie => { 
                     if ((((player.x + spriteWidth)) < zombie.x )
-                        && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
-                        && ((player.y + spriteHeight) > zombie.y)
-                        && (player.y < (zombie.y + spriteHeight)))
-                        {
-                            killZombie(zombie)
-                        }
+                    && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
+                    && ((player.y + spriteHeight) > zombie.y)
+                    && (player.y < (zombie.y + spriteHeight)))
+                        killZombie(zombie)
                 })
                 break;
             case 'down':
-                
+                zombieSearch.forEach(zombie => {
+                    if ((((player.x)) < (zombie.x + spriteWidth) )  
+                        && ((((player.x) + spriteWidth)) > (zombie.x))
+                        && ((player.y + spriteHeight + knifeRange) > zombie.y)
+                        && ((player.y) < (zombie.y)))
+                            killZombie(zombie)
+                    })
                 break;
             default:
                 p("left swing!")
                 zombieSearch.forEach(zombie => {
-                
-                 p("----stats------")
-                    p('PlayerX: ' + player.x)
-                    p('ZombieXH: ' + (zombie.x + spriteWidth))
-                    p("is playerX > ZombieXH?")
-                    // p('spriteX: ' + spriteWidth)
-                    // p('PlayerX plus spriteWidth: ' + (player.x + spriteWidth))
-                    // p('knifeRange: ' + knifeRange)
-                    p('PlayerX knifeRange: ' + ((player.x) - knifeRange))
-                    p('ZombieXH: ' + (zombie.x + spriteWidth))
-                    p('Is Playerknife range < then zombie xh?')
-                    // p('PlayerX plus knifeRange: ' + ((player.x) + knifeRange))
-                    p('ZombieX: ' + zombie.x)
-                    p("is this x numbers < then zombie x?")
-                    p(' ')
-                    if (((player.x)) > (zombie.x + spriteWidth) )
-                        p('true')
-                    if ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
-                        p('true')
-                    if ((player.y + spriteHeight) < zombie.y)
-                        p('true')
-                        
-                if ((((player.x)) > (zombie.x + spriteWidth) )
+                    if ((((player.x)) > (zombie.x + spriteWidth) )
                     && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
                     && ((player.y + spriteHeight) > zombie.y)
                     && (player.y < (zombie.y + spriteHeight)))
-                    {
                         killZombie(zombie)
-                    }
                 })
                 break;
         }
-            // (player.x + spriteWidth/4) ((player.x + spriteWidth) - (spriteWidth/4)) 
-                //if yes kill.
-    
-        //dection range
-            //is/if swing in range
-                //kill
-
-    //Note move kill to it's on function to keep things dry.
 }
 
 // this function is going to be how we move our players around
@@ -218,8 +177,9 @@ const detectHit = () => {
     })
 }
 const killZombie = zombie => {
-    zombie.alive = false
-    killCount++ 
+    // zombie.alive = false
+    // killCount++
+    p('KILLED!!!!!!') 
 } 
 // Will think about adding asdw keys.
 const bounderies = (key) => {
