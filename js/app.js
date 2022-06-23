@@ -5,9 +5,10 @@ let killCount = 0
 const spriteHeight = 25
 const spriteWidth = 20
 const playerSpeed = 8
-const zombieSpeed = 30
+const zombieSpeed = 3
 const shiftynessGlobal = 10
 let keyLock = false
+let keyLast = null
 // const swingRange = spriteHeight + 10 //That is a huge sword.
 const knifeRange = 20
 
@@ -36,6 +37,7 @@ class Sprite {
         this.shiftyness = shiftynessGlobal
         this.shiftynessTimer = 0
         
+        p('On creation: '+this.direction)
         //methods`
         this.changeDirection = function(sprite, direction) {
             // p('in the changeDirection \n before the changes')
@@ -104,6 +106,11 @@ class Sprite {
             }
         }
         this.move = function () {
+            // p('In the player.move')
+            // p('up: '+this.direction.up)
+            // p('down: '+this.direction.down)
+            // p('right: '+this.direction.right)
+            // p('left: '+this.direction.left)
             if (this.direction.up === true) {
                 this.y -= this.speed
                 if (this.y <= 0) { //Need ask about = in <=
@@ -133,7 +140,7 @@ class Sprite {
 }
 
 //Make players on the board.
-let player = new Sprite(100, game.height/4, {up:true,down:false,left:false,right:false}, playerSpeed, 'lightsteelblue', spriteWidth, spriteHeight)
+let player = new Sprite(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
 for (let i = 0; i < 1; i++){
     // zombie.push(new Sprite(
@@ -159,7 +166,7 @@ const gameLoop = () => {
 
     if (player.alive === true) {
         player.render()
-        player.move
+        player.move()
     } 
 
     zombie.forEach(zombie => {
@@ -222,52 +229,90 @@ const knifeSwing = () => {
         }
 }
 const keyuup = e => {
+    p('\n\n\nThe key been let go!')
+    p('keyLock was on '+keyLock)
     keyLock = false
+    p('keyLock is now '+keyLock)
+    p(`e.key: ${e.key} keyLast: ${keyLast}`)
+    if (e.key === keyLast) {
+        p('Before reset all to false.')
+        p(player.direction)
+        Object.keys(player.direction).forEach(directionKey => {
+            // p('inside the Forloop')
+            // p('Was direction '+player.direction.directionKey)
+            player.direction[directionKey] = false
+            // p('Changed direction to '+player.direction.directionKey)
+        })
+        p('After reset all flase.')
+        p(player.direction)
+
+    }
+    else
+        changePlayerDirection(keyLast)
 }
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
-    // console.log(e.key)
+    console.log('\n\n\nIn the key down: '+e.key)
     if (e.key === ' '){ //spacebar
         console.log("sing!!!!")
-        knifeSwing()}
+        knifeSwing()
+        return}
     if (!keyLock){
-        switch (e.key) {
-            case ('w'):
-            case ('ArrowUp'):
-                    player.changeDirection(player, 'up')
-                    // player.y -= player.speed
-                    if (player.y <= 0){
-                        player.y = 0} 
-            break
-            case ('a'):
-            case ('ArrowLeft'):
-            // case (40):
-                // this moves the player left
-                player.changeDirection(player, 'left')
-                    // player.x -= player.speed
-                if (player.x < 0){
-                    player.x = 0}
-            break
-            case ('s'):
-            case ('ArrowDown'):
-                player.changeDirection(player, 'down')
-                // player.y += player.speed
-                if (player.y > game.height)
-                    player.y = game.height
-            break
-            case ('d'):
-            case ('ArrowRight'):
-                // this moves the player to the right
-                player.changeDirection(player, 'right')
-                // player.x += player.speed
-                if (player.x > game.width){
-                    player.x = game.width                
-                }
-            break
-        }
-        //keyLock = true
+        p('not locked')
+        changePlayerDirection(e.key)
     }
-    
+    switch (e.key) {
+        case ('w'):
+        case ('ArrowUp'):
+        case ('a'):
+        case ('ArrowLeft'):
+        case ('s'):
+        case ('ArrowDown'):
+        case ('d'):
+        case ('ArrowRight'):
+        keyLast = e.key 
+        p('lastkey value given: '+keyLast)
+        break
+    }
+    keyLock = true
+    p('check keyLock as been set to true: '+keyLock+'\n')
+}
+const changePlayerDirection = (key) => {
+    p('The value of the e.key passed to ChaPlayerDir is: ' + key)
+    switch (key) {
+            
+        case ('w'):
+        case ('ArrowUp'):
+                player.changeDirection(player, 'up')
+                // player.y -= player.speed
+                // if (player.y <= 0){
+                //     player.y = 0} 
+        break
+        case ('a'):
+        case ('ArrowLeft'):
+        // case (40):
+            // this moves the player left
+            player.changeDirection(player, 'left')
+                // player.x -= player.speed
+            // if (player.x < 0){
+            //     player.x = 0}
+        break
+        case ('s'):
+        case ('ArrowDown'):
+            player.changeDirection(player, 'down')
+            // player.y += player.speed
+            // if (player.y > game.height)
+            //     player.y = game.height
+        break
+        case ('d'):
+        case ('ArrowRight'):
+            // this moves the player to the right
+            player.changeDirection(player, 'right')
+            // player.x += player.speed
+            // if (player.x > game.width){
+            //     player.x = game.width}
+        break
+    }
 }
 const detectHit = () => {
     zombie.filter(zombie => {
