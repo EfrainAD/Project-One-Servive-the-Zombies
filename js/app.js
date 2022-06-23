@@ -5,7 +5,8 @@ let killCount = 0
 const spriteHeight = 25
 const spriteWidth = 20
 const playerSpeed = 8
-const zombieSpeed = 3
+const zombieSpeed = 30
+const shiftynessGlobal = 10
 // const swingRange = spriteHeight + 10 //That is a huge sword.
 const knifeRange = 20
 
@@ -24,59 +25,88 @@ class Sprite {
     constructor(x, y, direction, speed, color, width, height) {
         this.x = x,
         this.y = y,
-        this.direction = direction
-        this.speed = speed
+        this.direction = direction, //I think this will work.
+        this.speed = speed,
         this.color = color,
         this.width = width,
         this.height = height
         
         this.alive = true,
-        this.shiftyness = 10
+        this.shiftyness = shiftynessGlobal
         this.shiftynessTimer = 0
         
-        //methods
-        this.changeDirection = function(direction) {
-            this.direction = direction
+        //methods`
+        this.changeDirection = function(sprite, direction) {
+            // p('in the changeDirection \n before the changes')
+            // p(sprite.direction)
+            // p(sprite.direction.up)
+            // p(sprite.direction.down)
+            // p(sprite.direction.right)
+            // p(sprite.direction.left)
+            Object.keys(sprite.direction).forEach(key => {
+                sprite.direction[key] = false;
+            })
+            // p('The changeed string to false')
+            // p(sprite.direction)
+            // p(sprite.direction.up)
+            // p(sprite.direction.down)
+            // p(sprite.direction.right)
+            // p(sprite.direction.left)
+
+            sprite.direction[direction] = true
+            // p('A changeed to true')
+            // p(sprite.direction)
+            // p(sprite.direction.up)
+            // p(sprite.direction.down)
+            // p(sprite.direction.right)
+            // p(sprite.direction.left)
+            // p('made it')
+            // eval(`sprite.direction.${direction} = true`)
+            //Try this in sprite.direction.[direction] = true
+            //this.direction =  direction
         }
-        
-        this.move = function() {
+
+        this.moveByAI = function() {
             //if change direction
             this.shiftynessTimer++
             // p(`shiftynessTimer: ${this.shiftynessTimer}`)
             if (this.shiftynessTimer === this.shiftyness) {
-                p('changing direction.')
+                // p('changing direction.')
                 this.shiftynessTimer = 0
                 randomDirectionChange(this)}
                 
             // p(this.direction)
             //if direction
-            switch (this.direction) {
-                case ('up'):
-                    this.y -= this.speed
-                    if (this.y <= 0) { //Need ask about = in <=
-                        this.y = 0
-                        this.direction = 'down'}
-                break;
-                case ('left'):
-                    this.x -= this.speed
-                    if (this.x <= 0 ){
-                        this.x = 0
-                        this.direction = 'right'}
-                break;
-                case ('down'):
-                    this.y += this.speed
-                    if (this.y >= game.height){
-                        this.y = game.height
-                        this.direction = 'up'}
-                break;
-                case ('right'):
-                    this.x += this.speed
-                    if (this.x >= game.width){
-                        this.x = game.width
-                        this.direction = 'left'}   
-                break;
-            }    
-        } 
+            if (this.direction.up === true) {
+                this.y -= this.speed
+                if (this.y <= 0) { //Need ask about = in <=
+                    this.y = 0
+                    this.changeDirection(this,'down')
+                this.direction['up'] = false
+                this.direction['down'] = true}
+            } 
+            else if (this.direction.left === true) {
+                this.x -= this.speed
+                if (this.x <= 0 ){
+                    this.x = 0
+                    this.changeDirection(this,'right')}
+            }
+            else if (this.direction.down === true) {
+                this.y += this.speed
+                if (this.y >= game.height){
+                    this.y = game.height
+                    this.changeDirection(this,'up')}
+            }
+            else if (this.direction.right === true) {
+                this.x += this.speed
+                if (this.x >= game.width){
+                    this.x = game.width
+                    this.changeDirection(this,'left')}
+            }
+        }
+        // this.move = function () {
+
+        // } 
         this.render = function () {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y, this.width, this.height)
@@ -85,7 +115,7 @@ class Sprite {
 }
 
 //Make players on the board.
-let player = new Sprite(100, game.height/4, 'up', playerSpeed, 'lightsteelblue', spriteWidth, spriteHeight)
+let player = new Sprite(100, game.height/4, {up:true,down:false,left:false,right:false}, playerSpeed, 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
 for (let i = 0; i < 1; i++){
     // zombie.push(new Sprite(
@@ -95,7 +125,7 @@ for (let i = 0; i < 1; i++){
     zombie.push(new Sprite(
         (game.width/2), 
         (game.height/2), 
-        'right', zombieSpeed, '#bada55', spriteWidth, spriteHeight))
+        {up:false,down:false,left:false,right:true}, zombieSpeed, '#bada55', spriteWidth, spriteHeight))
 } 
 
 // MAIN FUNCTION \\
@@ -116,7 +146,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            zombie.move()
+            zombie.moveByAI()
         }
     })
 }
@@ -239,13 +269,13 @@ const killZombie = zombie => {
     p('KILLED!!!!!!') 
 } 
 const convertDirectionNumber = (sprite) => {
-    if (sprite.direction === 'up')
+    if (sprite.direction.up === true)
         return 0
-    if (sprite.direction === 'right')
+    if (sprite.direction.right === true)
         return 1
-    if (sprite.direction === 'down')
+    if (sprite.direction.down === true)
         return 2
-    if (sprite.direction === 'left')
+    if (sprite.direction.left === true)
         return 3
 } 
 const randomDirectionChange = (sprite) => {
@@ -262,11 +292,11 @@ const randomDirectionChange = (sprite) => {
     // p("NDirection %4: "+newDirectionInt)
 
     if (newDirectionInt === 0){
-        sprite.direction = 'up'}
+        sprite.changeDirection(sprite,'up')}
     if (newDirectionInt === 1){
-        sprite.direction = 'right'}
+        sprite.changeDirection(sprite,'right')}
     if (newDirectionInt === 2){
-        sprite.direction = 'down'}
+        sprite.changeDirection(sprite,'down')}
     if (newDirectionInt === 3){
-        sprite.direction = 'left'}
+        sprite.changeDirection(sprite,'left')}
 }
