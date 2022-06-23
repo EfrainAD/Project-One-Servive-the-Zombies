@@ -7,6 +7,7 @@ const spriteWidth = 20
 const playerSpeed = 8
 const zombieSpeed = 30
 const shiftynessGlobal = 10
+let keyLock = false
 // const swingRange = spriteHeight + 10 //That is a huge sword.
 const knifeRange = 20
 
@@ -81,9 +82,7 @@ class Sprite {
                 this.y -= this.speed
                 if (this.y <= 0) { //Need ask about = in <=
                     this.y = 0
-                    this.changeDirection(this,'down')
-                this.direction['up'] = false
-                this.direction['down'] = true}
+                    this.changeDirection(this,'down')}
             } 
             else if (this.direction.left === true) {
                 this.x -= this.speed
@@ -104,9 +103,28 @@ class Sprite {
                     this.changeDirection(this,'left')}
             }
         }
-        // this.move = function () {
-
-        // } 
+        this.move = function () {
+            if (this.direction.up === true) {
+                this.y -= this.speed
+                if (this.y <= 0) { //Need ask about = in <=
+                    this.y = 0}
+            } 
+            else if (this.direction.left === true) {
+                this.x -= this.speed
+                if (this.x <= 0 ){
+                    this.x = 0}
+            }
+            else if (this.direction.down === true) {
+                this.y += this.speed
+                if (this.y >= game.height){
+                    this.y = game.height}
+            }
+            else if (this.direction.right === true) {
+                this.x += this.speed
+                if (this.x >= game.width){
+                    this.x = game.width}
+            }
+        } 
         this.render = function () {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y, this.width, this.height)
@@ -141,6 +159,7 @@ const gameLoop = () => {
 
     if (player.alive === true) {
         player.render()
+        player.move
     } 
 
     zombie.forEach(zombie => {
@@ -155,6 +174,7 @@ const gameLoop = () => {
 document.addEventListener('DOMContentLoaded', function () {
     // in here, we need to have our movement handler
 document.addEventListener('keydown', movementHandler)
+document.addEventListener('keyup', keyuup)
     // we also need our game loop running at an interval
 setInterval(gameLoop, 60)
 })
@@ -166,90 +186,88 @@ const knifeSwing = () => {
     }).filter(zombie => {
         return ((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)
     })
-        p("player.Direction: " + player.direction)
-        switch (player.direction) {
-            case 'up':
-                zombieSearch.forEach(zombie => {
-                    if ((((player.x)) < (zombie.x + spriteWidth) )  
+        p("player.Direction: I would need to make a function for that.")
+        if (player.direction.up === true) {
+            zombieSearch.forEach(zombie => {
+                if ((((player.x)) < (zombie.x + spriteWidth) )  
+                && ((((player.x) + spriteWidth)) > (zombie.x))
+                && ((player.y + spriteHeight) > zombie.y)
+                && ((player.y - knifeRange) < (zombie.y + spriteHeight)))
+                    killZombie(zombie)
+            })
+        } else if (player.direction.right === true) {
+            zombieSearch.forEach(zombie => { 
+                if ((((player.x + spriteWidth)) < zombie.x )
+                && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
+                && ((player.y + spriteHeight) > zombie.y)
+                && (player.y < (zombie.y + spriteHeight)))
+                    killZombie(zombie)
+            })
+        } else if (player.direction.down === true) {
+            zombieSearch.forEach(zombie => {
+                if ((((player.x)) < (zombie.x + spriteWidth) )  
                     && ((((player.x) + spriteWidth)) > (zombie.x))
-                    && ((player.y + spriteHeight) > zombie.y)
-                    && ((player.y - knifeRange) < (zombie.y + spriteHeight)))
+                    && ((player.y + spriteHeight + knifeRange) > zombie.y)
+                    && ((player.y) < (zombie.y)))
                         killZombie(zombie)
-                    })
-                break;
-            case 'right':
-                zombieSearch.forEach(zombie => { 
-                    if ((((player.x + spriteWidth)) < zombie.x )
-                    && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
-                    && ((player.y + spriteHeight) > zombie.y)
-                    && (player.y < (zombie.y + spriteHeight)))
-                        killZombie(zombie)
-                })
-                break;
-            case 'down':
-                zombieSearch.forEach(zombie => {
-                    if ((((player.x)) < (zombie.x + spriteWidth) )  
-                        && ((((player.x) + spriteWidth)) > (zombie.x))
-                        && ((player.y + spriteHeight + knifeRange) > zombie.y)
-                        && ((player.y) < (zombie.y)))
-                            killZombie(zombie)
-                    })
-                break;
-            default:
-                p("left swing!")
-                zombieSearch.forEach(zombie => {
-                    if ((((player.x)) > (zombie.x + spriteWidth) )
-                    && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
-                    && ((player.y + spriteHeight) > zombie.y)
-                    && (player.y < (zombie.y + spriteHeight)))
-                        killZombie(zombie)
-                })
-                break;
+            })
+        } else if (player.direction.left === true) {
+            zombieSearch.forEach(zombie => {
+                if ((((player.x)) > (zombie.x + spriteWidth) )
+                && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
+                && ((player.y + spriteHeight) > zombie.y)
+                && (player.y < (zombie.y + spriteHeight)))
+                    killZombie(zombie)
+            })
         }
 }
-
+const keyuup = e => {
+    keyLock = false
+}
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
-    //boundery
     // console.log(e.key)
-    switch (e.key) {
-        case ('w'):
-        case ('ArrowUp'):
-            player.changeDirection('up')
-            player.y -= player.speed
-            if (player.y <= 0){
-                player.y = 0}    
+    if (e.key === ' '){ //spacebar
+        console.log("sing!!!!")
+        knifeSwing()}
+    if (!keyLock){
+        switch (e.key) {
+            case ('w'):
+            case ('ArrowUp'):
+                    player.changeDirection(player, 'up')
+                    // player.y -= player.speed
+                    if (player.y <= 0){
+                        player.y = 0} 
             break
-        case ('a'):
-        case ('ArrowLeft'):
-        // case (40):
-            // this moves the player left
-            player.changeDirection('left')
-                player.x -= player.speed
-            if (player.x < 0){
-                player.x = 0}
-        break
-        case ('s'):
-        case ('ArrowDown'):
-            player.changeDirection('down')
-            player.y += player.speed
-            if (player.y > game.height)
-                player.y = game.height
-        break
-        case ('d'):
-        case ('ArrowRight'):
-            // this moves the player to the right
-            player.changeDirection('right')
-            player.x += player.speed
-            if (player.x > game.width){
-                player.x = game.width                
-            }
-        break
-        case (' '): //spacebar
-            // console.log("sing!!!!")
-            knifeSwing()
-        break
+            case ('a'):
+            case ('ArrowLeft'):
+            // case (40):
+                // this moves the player left
+                player.changeDirection(player, 'left')
+                    // player.x -= player.speed
+                if (player.x < 0){
+                    player.x = 0}
+            break
+            case ('s'):
+            case ('ArrowDown'):
+                player.changeDirection(player, 'down')
+                // player.y += player.speed
+                if (player.y > game.height)
+                    player.y = game.height
+            break
+            case ('d'):
+            case ('ArrowRight'):
+                // this moves the player to the right
+                player.changeDirection(player, 'right')
+                // player.x += player.speed
+                if (player.x > game.width){
+                    player.x = game.width                
+                }
+            break
+        }
+        //keyLock = true
     }
+    
 }
 const detectHit = () => {
     zombie.filter(zombie => {
@@ -266,7 +284,7 @@ const detectHit = () => {
 const killZombie = zombie => {
     zombie.alive = false
     killCount++
-    p('KILLED!!!!!!') 
+    // p('KILLED!!!!!!') 
 } 
 const convertDirectionNumber = (sprite) => {
     if (sprite.direction.up === true)
@@ -299,4 +317,24 @@ const randomDirectionChange = (sprite) => {
         sprite.changeDirection(sprite,'down')}
     if (newDirectionInt === 3){
         sprite.changeDirection(sprite,'left')}
+}
+const directionMatch = (sprite, direction) => {
+    switch (direction) {
+        case 'up':
+            if(sprite.direction.up === true)
+                return true            
+        break;
+        case 'down':
+            if(sprite.direction.down === true)
+                return true 
+        break;
+        case 'right':
+            if(sprite.direction.right === true)
+                return true 
+        break;
+        case 'left':
+            if(sprite.direction.left === true)
+                return true 
+        break;
+    }
 }
