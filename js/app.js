@@ -21,10 +21,10 @@ game.height = 368
 // game.setAttribute('width', getComputedStyle(game)['width'])
 // game.setAttribute('height', getComputedStyle(game)['height'])
 const image = new Image()
-image.src = '../img/plain_grass.bmp'
-image.onload = () => {
-    ctx.drawImage(image, 0.0)
-}
+image.src = 'img/plain_grass.bmp'
+// image.onload = () => {
+//     ctx.drawImage(image, 0.0)
+// }
 
 
 
@@ -147,7 +147,7 @@ class Sprite {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y, this.width, this.height)
         }
-    }
+    } 
 }
 
 //Make players on the board.
@@ -168,6 +168,7 @@ for (let i = 0; i < 5; i++){
 const gameLoop = () => {
     
     ctx.clearRect(0, 0, game.width, game.height)
+    ctx.drawImage(image, 0.0)
     
     // messageBoard.textContent = player.x + ', ' + player.y + '\nKills: ' + killCount 
     
