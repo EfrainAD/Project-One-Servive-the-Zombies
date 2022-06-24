@@ -16,12 +16,12 @@ const knifeRange = 20
 const ctx = game.getContext('2d')
 
 // so, we have a variable height and width on our canvas, so we need to get that height and width as a reference point so we can do stuff with it later.
-game.width = 524
-game.height = 376
+game.width = 528
+game.height = 368
 // game.setAttribute('width', getComputedStyle(game)['width'])
 // game.setAttribute('height', getComputedStyle(game)['height'])
 const image = new Image()
-image.src = '../img/Graveyard_Keeper.jpeg'
+image.src = '../img/plain_grass.bmp'
 image.onload = () => {
     ctx.drawImage(image, 0.0)
 }
