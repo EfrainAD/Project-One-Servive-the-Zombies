@@ -1,9 +1,9 @@
 const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
-const messageBoard = document.getElementById('movement')
+// const messageBoard = document.getElementById('movement')
 let killCount = 0
-const spriteHeight = 25
-const spriteWidth = 20
+const spriteHeight = 16
+const spriteWidth = 16
 const playerSpeed = 8
 const zombieSpeed = 3
 const shiftynessGlobal = 10
@@ -16,8 +16,19 @@ const knifeRange = 20
 const ctx = game.getContext('2d')
 
 // so, we have a variable height and width on our canvas, so we need to get that height and width as a reference point so we can do stuff with it later.
-game.setAttribute('width', getComputedStyle(game)['width'])
-game.setAttribute('height', getComputedStyle(game)['height'])
+game.width = 524
+game.height = 376
+// game.setAttribute('width', getComputedStyle(game)['width'])
+// game.setAttribute('height', getComputedStyle(game)['height'])
+const image = new Image()
+image.src = '../img/Graveyard_Keeper.jpeg'
+image.onload = () => {
+    ctx.drawImage(image, 0.0)
+}
+
+
+
+
 
 console.log('this is the canvas width', game.width)
 console.log('this is the canvas height', game.height)
@@ -142,7 +153,7 @@ class Sprite {
 //Make players on the board.
 let player = new Sprite(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, 'lightsteelblue', spriteWidth, spriteHeight)
 let zombie = []
-for (let i = 0; i < 1; i++){
+for (let i = 0; i < 5; i++){
     // zombie.push(new Sprite(
     //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
     //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
@@ -158,7 +169,7 @@ const gameLoop = () => {
     
     ctx.clearRect(0, 0, game.width, game.height)
     
-    messageBoard.textContent = player.x + ', ' + player.y + '\nKills: ' + killCount 
+    // messageBoard.textContent = player.x + ', ' + player.y + '\nKills: ' + killCount 
     
     // const str = "Zombie X: "+zombie[0].x+"\nZombe Y: "+zombie[0].y
     // p(str)
