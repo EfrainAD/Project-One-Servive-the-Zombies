@@ -64,7 +64,7 @@ class Player {
         this.x = x,
         this.y = y,
         this.Xsprite = x + 17 //left and right reach.
-        this.Ysprite = y + 5
+        this.Ysprite = y + 5     //When adjust the hit box with boundrys do oposite,
         this.spriteWidth = 34
         this.spriteHeight = 57
         this.direction = direction, //I think this will work.
@@ -154,32 +154,37 @@ class Player {
             if (this.direction.up === true) {
                 this.y -= this.speed
                 this.Ysprite -= this.speed
-                if (this.y <= 0) { //Need ask about = in <=
-                    this.y = 0}
+                if (this.Ysprite <= 0) { //Need ask about = in <=
+                    this.Ysprite = 0 
+                    this.y = -5
+                }
                 else{
                     this.changeFrame('up')}
             } 
             else if (this.direction.left === true) {
                 this.x -= this.speed
                 this.Xsprite -= this.speed
-                if (this.x <= 0 ){
-                    this.x = 0}
+                if (this.Xsprite <= 0) { //Need ask about = in <=
+                    this.Xsprite = 0 
+                    this.x = -17}
                 else{
                     this.changeFrame('left')}
             }
             else if (this.direction.down === true) {
                 this.y += this.speed
                 this.Ysprite += this.speed
-                if (this.y >= game.height){
-                    this.y = game.height}
+                if (this.Ysprite >= game.height){
+                    this.Ysprite = game.height
+                    this.y = game.height - 5}
                 else{
                     this.changeFrame('down')}
             }
             else if (this.direction.right === true) {
                 this.x += this.speed
                 this.Xsprite += this.speed
-                if (this.x >= game.width){
-                    this.x = game.width}
+                if (this.Xsprite >= game.width){
+                    this.Xsprite = game.width
+                    this.x = game.width - 17}
                 else{
                     this.changeFrame('right')}
             }
