@@ -62,9 +62,9 @@ class Player {
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
-        this.Xsprite = x + 36 //left and right reach.
-        this.Ysprite = y + 46
-        this.spriteWidth = 55
+        this.Xsprite = x + 17 //left and right reach.
+        this.Ysprite = y + 5
+        this.spriteWidth = 34
         this.spriteHeight = 57
         this.direction = direction, //I think this will work.
         this.speed = speed,
