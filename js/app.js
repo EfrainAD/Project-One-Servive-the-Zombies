@@ -44,7 +44,8 @@ const zombieImg = {
     // frameX: 0,
     // frameY: 0,
     copXIndex: 4, //* (zombie5ImgRaw.width/3),
-    copYIndex: 6,
+    copYIndex: 2, //6: down 0: left 2: up 4:
+    // copYIndex: 0, //6: down, 0: left, 2: up, 4: right
     maxXIndex: 11, //3 imgaes
     maxYIndex: 6, //4 imgaes, one for each direction.
     width: (zombie5ImgRaw.width/36), 
@@ -227,9 +228,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
-        this.Xsprite = x + 36 //left and right reach.
+        this.Xsprite = x + 39 //left and right reach.
         this.Ysprite = y + 46
-        this.spriteWidth = 55
+        this.spriteWidth = 49
         this.spriteHeight =  57
         this.direction = direction, //I think this will work.
         this.speed = speed,
@@ -399,7 +400,7 @@ for (let i = 0; i < 1; i++){
     zombie.push(new Zombie(
         (game.width/2), 
         (game.height/2), 
-        {up:false,down:false,left:false,right:true}, zombieSpeed, zombieImg, spriteWidth, spriteHeight))
+        {up:false,down:false,left:true,right:false}, zombieSpeed, zombieImg, spriteWidth, spriteHeight))
 } 
 
 // MAIN FUNCTION \\
