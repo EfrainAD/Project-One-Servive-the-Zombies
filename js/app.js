@@ -293,8 +293,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             if (this.direction.up === true) {
                 this.y -= this.speed
                 this.Ysprite -= this.speed
-                if (this.y <= 0) { //Need ask about = in <=
-                    this.y = 0
+                if (this.Ysprite <= 0) { //Need ask about = in <=
+                    this.Ysprite = 0
+                    this.y = -46
                     this.changeDirection(this,'down')}
                 else{
                     this.changeFrame('up')}
@@ -302,8 +303,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             else if (this.direction.left === true) {
                 this.x -= this.speed
                 this.Xsprite -= this.speed
-                if (this.x <= 0 ){
-                    this.x = 0
+                if (this.Xsprite <= 0 ){
+                    this.Xsprite = 0
+                    this.x = -39
                     this.changeDirection(this,'right')}
                 else{
                     this.changeFrame('left')}
@@ -311,8 +313,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             else if (this.direction.down === true) {
                 this.y += this.speed
                 this.Ysprite += this.speed
-                if (this.y >= game.height){
-                    this.y = game.height
+                if (this.Ysprite >= game.height){
+                    this.Ysprite = game.height
+                    this.y = game.height - 46
                     this.changeDirection(this,'up')}
                 else{
                     this.changeFrame('down')}
@@ -320,8 +323,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             else if (this.direction.right === true) {
                 this.x += this.speed
                 this.Xsprite += this.speed
-                if (this.x >= game.width){
-                    this.x = game.width
+                if (this.Xsprite >= game.width){
+                    this.Xsprite = game.width
+                    this.x = game.width -39
                     this.changeDirection(this,'left')}
                 else{
                     this.changeFrame('right')}
@@ -430,7 +434,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            //zombie.moveByAI()
+            zombie.moveByAI()
         }
     })
 }
