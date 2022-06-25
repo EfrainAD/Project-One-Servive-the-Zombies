@@ -219,10 +219,10 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
-        this.Xsprite = x + 30
-        this.Ysprite = y + 50
-        this.spriteWidth = 30
-        this.spriteHeight = y + 35
+        this.Xsprite = x + 36 //left and right reach.
+        this.Ysprite = y + 46
+        this.spriteWidth = 55
+        this.spriteHeight =  57
         this.direction = direction, //I think this will work.
         this.speed = speed,
         this.skin = skin,
@@ -278,6 +278,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             //if direction
             if (this.direction.up === true) {
                 this.y -= this.speed
+                this.Ysprite -= this.speed
                 if (this.y <= 0) { //Need ask about = in <=
                     this.y = 0
                     this.changeDirection(this,'down')}
@@ -286,6 +287,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             } 
             else if (this.direction.left === true) {
                 this.x -= this.speed
+                this.Xsprite -= this.speed
                 if (this.x <= 0 ){
                     this.x = 0
                     this.changeDirection(this,'right')}
@@ -294,6 +296,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             }
             else if (this.direction.down === true) {
                 this.y += this.speed
+                this.Ysprite += this.speed
                 if (this.y >= game.height){
                     this.y = game.height
                     this.changeDirection(this,'up')}
@@ -302,6 +305,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             }
             else if (this.direction.right === true) {
                 this.x += this.speed
+                this.Xsprite += this.speed
                 if (this.x >= game.width){
                     this.x = game.width
                     this.changeDirection(this,'left')}
