@@ -219,6 +219,10 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
+        this.Xsprite = x + 30
+        this.Ysprite = y + 50
+        this.spriteWidth = 30
+        this.spriteHeight = y + 35
         this.direction = direction, //I think this will work.
         this.speed = speed,
         this.skin = skin,
@@ -336,7 +340,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             ctx.fillStyle = 'green'
             ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
             ctx.fillStyle = 'red'
-            ctx.fillRect(this.x, this.y, this.width, this.height)
+            ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
             ctx.drawImage(
                 this.skin.img, 
                 this.skin.copXIndex * (this.skin.width), 
@@ -554,10 +558,10 @@ const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
     // zombie.filter(zombie => { //NEED REMOVE DEAD ONES.
     //     return zombie.alive === true
     // }).forEach(zombie => {
-        if (player.x < zombie.x + zombie.width
-            && player.x + player.width > zombie.x
-            && player.y < zombie.y + zombie.height
-            && player.y + player.height > zombie.y) {
+        if (player.x < zombie.Xsprite + zombie.spriteWidth
+            && player.x + player.width > zombie.Xsprite
+            && player.y < zombie.Ysprite + zombie.spriteHeight
+            && player.y + player.height > zombie.Ysprite) {
             player.alive = false
         }
     // })
