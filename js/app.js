@@ -62,6 +62,10 @@ class Player {
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
+        this.Xsprite = x + 36 //left and right reach.
+        this.Ysprite = y + 46
+        this.spriteWidth = 55
+        this.spriteHeight = 57
         this.direction = direction, //I think this will work.
         this.speed = speed,
         this.skin = skin,
@@ -148,6 +152,7 @@ class Player {
             // p('left: '+this.direction.left)
             if (this.direction.up === true) {
                 this.y -= this.speed
+                this.Ysprite -= this.speed
                 if (this.y <= 0) { //Need ask about = in <=
                     this.y = 0}
                 else{
@@ -155,6 +160,7 @@ class Player {
             } 
             else if (this.direction.left === true) {
                 this.x -= this.speed
+                this.Xsprite -= this.speed
                 if (this.x <= 0 ){
                     this.x = 0}
                 else{
@@ -162,6 +168,7 @@ class Player {
             }
             else if (this.direction.down === true) {
                 this.y += this.speed
+                this.Ysprite += this.speed
                 if (this.y >= game.height){
                     this.y = game.height}
                 else{
@@ -169,6 +176,7 @@ class Player {
             }
             else if (this.direction.right === true) {
                 this.x += this.speed
+                this.Xsprite += this.speed
                 if (this.x >= game.width){
                     this.x = game.width}
                 else{
@@ -179,7 +187,7 @@ class Player {
             ctx.fillStyle = 'green'
             ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
             ctx.fillStyle = 'red'
-            ctx.fillRect(this.x, this.y, this.width, this.height)
+            ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
             ctx.drawImage(
                 this.skin.img, 
                 this.skin.copXIndex * (this.skin.width), 
