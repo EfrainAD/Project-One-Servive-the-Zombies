@@ -36,19 +36,19 @@ const playerImg = {
     imgHeight: (playerImgRaw.height/5)
 }
 const zombie5ImgRaw = new Image()
-zombie5ImgRaw.src = 'img/Zombies/5ZombieSpriteSheet.png'
+zombie5ImgRaw.src = 'img/zombie_0.png'
 // zombie5ImgRaw.set_size(0.5)
 // zombie5ImgRaw.height = 30
 const zombieImg = {
     img: zombie5ImgRaw,
     // frameX: 0,
     // frameY: 0,
-    copXIndex: 0, //* (zombie5ImgRaw.width/3),
-    copYIndex: 0,
-    maxXIndex: 3, //3 imgaes
-    maxYIndex: 4, //4 imgaes, one for each direction.
-    imgWidth: (zombie5ImgRaw.width/3), 
-    imgHeight: zombie5ImgRaw.height/4,
+    copXIndex: 4, //* (zombie5ImgRaw.width/3),
+    copYIndex: 6,
+    maxXIndex: 11, //3 imgaes
+    maxYIndex: 6, //4 imgaes, one for each direction.
+    imgWidth: (zombie5ImgRaw.width/36), 
+    imgHeight: zombie5ImgRaw.height/8,
     // frameWalking: 
 }
 
@@ -209,9 +209,7 @@ class Player {
             }
             if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
                 this.skin.copXIndex = 0
-            }
-            // else { 
-            //     }             
+            }            
         }
     } 
 }
@@ -277,24 +275,32 @@ class Zombie {
                 if (this.y <= 0) { //Need ask about = in <=
                     this.y = 0
                     this.changeDirection(this,'down')}
+                else{
+                    this.changeFrame('up')}
             } 
             else if (this.direction.left === true) {
                 this.x -= this.speed
                 if (this.x <= 0 ){
                     this.x = 0
                     this.changeDirection(this,'right')}
+                else{
+                    this.changeFrame('left')}
             }
             else if (this.direction.down === true) {
                 this.y += this.speed
                 if (this.y >= game.height){
                     this.y = game.height
                     this.changeDirection(this,'up')}
+                else{
+                    this.changeFrame('down')}
             }
             else if (this.direction.right === true) {
                 this.x += this.speed
                 if (this.x >= game.width){
                     this.x = game.width
                     this.changeDirection(this,'left')}
+                else{
+                    this.changeFrame('right')}
             }
         }
         this.move = function () {
@@ -326,12 +332,7 @@ class Zombie {
         } 
         this.render = function () {
             ctx.fillStyle = this.color
-            // ctx.fillRect(this.x, this.y, this.width, this.height)
-            // ctx.drawImage(skin, this.x, this.y)
-            // ctx.drawImage(playerImgRaw,0,0,)
             ctx.drawImage(
-            //     playerImgRaw, 0,0,playerImgRaw.width/9,playerImgRaw.height/3,this.x,this.y
-            // ,playerImgRaw.width/9,playerImgRaw.height/3
                 this.skin.img, 
                 this.skin.copXIndex * (this.skin.imgWidth), 
                 this.skin.copYIndex * (this.skin.imgHeight), 
@@ -340,22 +341,30 @@ class Zombie {
                 this.x, this.y,
                 this.skin.imgWidth, 
                 this.skin.imgHeight
-                )
-            if (this.skin.copXIndex < (this.skin.maxXIndex - 1)) {
+            )    
+        }
+        this.changeFrame = function (direction) {
+            if (direction === 'down'){
+                this.skin.copYIndex = 6
                 this.skin.copXIndex += 1
             }
-            else { 
-                // p('why I never run')
-                this.skin.copXIndex = 1}
-            // p('Index: '+this.skin.copXIndex+' max: '+this.skin.maxXIndex)
-            //working.//               ctx.drawImage(playerImgRaw, 0,0,playerImgRaw.width/9,playerImgRaw.height/3,this.x,this.y
-            // ,playerImgRaw.width/9,playerImgRaw.height/3)
-                         
+            if (direction === 'up'){
+                this.skin.copYIndex = 2
+                this.skin.copXIndex += 1
+            }
+            if (direction === 'left'){
+                this.skin.copYIndex = 0 
+                this.skin.copXIndex += 1
+            }
+            if (direction === 'right'){
+                this.skin.copYIndex = 4
+                this.skin.copXIndex += 1
+            }
+            if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
+                this.skin.copXIndex = 0
+            }            
         }
     } 
-}
-const skinSelector = (skin) => {
-
 }
 
 //Make players on the board.
@@ -392,7 +401,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            // zombie.moveByAI()
+            zombie.moveByAI()
         }
     })
 }
