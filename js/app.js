@@ -32,8 +32,8 @@ const playerImg = {
     copYIndex: 0,
     maxXIndex: 6, //9 imgaes
     maxYIndex: 4, //2 imgaes, one for each direction.
-    imgWidth: playerImgRaw.width/11, 
-    imgHeight: (playerImgRaw.height/5)
+    width: playerImgRaw.width/11, 
+    height: (playerImgRaw.height/5)
 }
 const zombie5ImgRaw = new Image()
 zombie5ImgRaw.src = 'img/zombie_0.png'
@@ -47,8 +47,8 @@ const zombieImg = {
     copYIndex: 6,
     maxXIndex: 11, //3 imgaes
     maxYIndex: 6, //4 imgaes, one for each direction.
-    imgWidth: (zombie5ImgRaw.width/36), 
-    imgHeight: zombie5ImgRaw.height/8,
+    width: (zombie5ImgRaw.width/36), 
+    height: zombie5ImgRaw.height/8,
     // frameWalking: 
 }
 
@@ -180,13 +180,13 @@ class Player {
             // ctx.fillRect(this.x, this.y, this.width, this.height)
             ctx.drawImage(
                 this.skin.img, 
-                this.skin.copXIndex * (this.skin.imgWidth), 
-                this.skin.copYIndex * (this.skin.imgHeight), 
-                this.skin.imgWidth, 
-                this.skin.imgHeight, 
+                this.skin.copXIndex * (this.skin.width), 
+                this.skin.copYIndex * (this.skin.height), 
+                this.skin.width, 
+                this.skin.height, 
                 this.x, this.y,
-                this.skin.imgWidth, 
-                this.skin.imgHeight
+                this.skin.width, 
+                this.skin.height
                 )            
             }
         this.changeFrame = function (direction) {
@@ -334,13 +334,13 @@ class Zombie {
             ctx.fillStyle = this.color
             ctx.drawImage(
                 this.skin.img, 
-                this.skin.copXIndex * (this.skin.imgWidth), 
-                this.skin.copYIndex * (this.skin.imgHeight), 
-                this.skin.imgWidth, 
-                this.skin.imgHeight, 
+                this.skin.copXIndex * (this.skin.width), 
+                this.skin.copYIndex * (this.skin.height), 
+                this.skin.width, 
+                this.skin.height, 
                 this.x, this.y,
-                this.skin.imgWidth, 
-                this.skin.imgHeight
+                this.skin.width, 
+                this.skin.height
             )    
         }
         this.changeFrame = function (direction) {
@@ -391,7 +391,9 @@ const gameLoop = () => {
     
     // const str = "Zombie X: "+zombie[0].x+"\nZombe Y: "+zombie[0].y
     // p(str)
-    detectHit()
+    zombie.forEach(zombie => {
+        detectHit(zombie)
+    })
 
     if (player.alive === true) {
         player.render()
@@ -543,7 +545,7 @@ const changePlayerDirection = (key) => {
         break
     }
 }
-const detectHit = () => {
+const detectHit = () => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
     zombie.filter(zombie => {
         return zombie.alive === true
     }).forEach(zombie => {
