@@ -18,15 +18,34 @@ const ctx = game.getContext('2d')
 // so, we have a variable height and width on our canvas, so we need to get that height and width as a reference point so we can do stuff with it later.
 game.width = 528
 game.height = 368
-// game.setAttribute('width', getComputedStyle(game)['width'])
-// game.setAttribute('height', getComputedStyle(game)['height'])
+game.setAttribute('width', getComputedStyle(game)['width'])
+game.setAttribute('height', getComputedStyle(game)['height'])
+
 const image = new Image()
-image.src = 'img/plain_grass.bmp'
-// image.onload = () => {
-//     ctx.drawImage(image, 0.0)
-// }
+image.src = 'img/map2.bmp'
 
-
+const playerImgRaw = new Image()
+playerImgRaw.src = 'img/chibi-layered.png'
+const playerImg = {
+    img: playerImgRaw,
+    copX: 0,
+    copY: 0,
+    imgWidth: playerImgRaw.width/9, 
+    imgHeight: playerImgRaw.height/3 
+}
+const zombie5ImgRaw = new Image()
+zombie5ImgRaw.src = 'img/Zombies/5ZombieSpriteSheet.png'
+// zombie5ImgRaw.set_size(0.5)
+// zombie5ImgRaw.height = 30
+const zombieImg = {
+    img: zombie5ImgRaw,
+    // frameX: 0,
+    // frameY: 0,
+    copX: 0,
+    copY: 0,
+    imgWidth: zombie5ImgRaw.width/3, 
+    imgHeight: zombie5ImgRaw.height/4,
+}
 
 
 
@@ -35,12 +54,12 @@ console.log('this is the canvas height', game.height)
 
 // Objects are made of properties(K:v pairs) and methods(functions)
 class Sprite {
-    constructor(x, y, direction, speed, color, width, height) {
+    constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
         this.direction = direction, //I think this will work.
         this.speed = speed,
-        this.color = color,
+        this.skin = skin,
         this.width = width,
         this.height = height
         
@@ -145,13 +164,30 @@ class Sprite {
         } 
         this.render = function () {
             ctx.fillStyle = this.color
-            ctx.fillRect(this.x, this.y, this.width, this.height)
+            // ctx.fillRect(this.x, this.y, this.width, this.height)
+            // ctx.drawImage(skin, this.x, this.y)
+            // ctx.drawImage(playerImgRaw,0,0,)
+            ctx.drawImage(
+            //     playerImgRaw, 0,0,playerImgRaw.width/9,playerImgRaw.height/3,this.x,this.y
+            // ,playerImgRaw.width/9,playerImgRaw.height/3
+                          this.skin.img, 
+                          this.skin.copX, this.skin.copY, 
+                          this.skin.imgWidth, this.skin.imgHeight, 
+                          this.x, this.y,
+                          this.skin.imgWidth, this.skin.imgHeight
+                          )
+            //working.//               ctx.drawImage(playerImgRaw, 0,0,playerImgRaw.width/9,playerImgRaw.height/3,this.x,this.y
+            // ,playerImgRaw.width/9,playerImgRaw.height/3)
+                         
         }
     } 
 }
+const skinSelector = (skin) => {
+
+}
 
 //Make players on the board.
-let player = new Sprite(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, 'lightsteelblue', spriteWidth, spriteHeight)
+let player = new Sprite(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg, spriteWidth, spriteHeight)
 let zombie = []
 for (let i = 0; i < 5; i++){
     // zombie.push(new Sprite(
@@ -161,14 +197,14 @@ for (let i = 0; i < 5; i++){
     zombie.push(new Sprite(
         (game.width/2), 
         (game.height/2), 
-        {up:false,down:false,left:false,right:true}, zombieSpeed, '#bada55', spriteWidth, spriteHeight))
+        {up:false,down:false,left:false,right:true}, zombieSpeed, zombieImg, spriteWidth, spriteHeight))
 } 
 
 // MAIN FUNCTION \\
 const gameLoop = () => {
     
     ctx.clearRect(0, 0, game.width, game.height)
-    ctx.drawImage(image, 0.0)
+    ctx.drawImage(image, 0,0)
     
     // messageBoard.textContent = player.x + ', ' + player.y + '\nKills: ' + killCount 
     
