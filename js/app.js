@@ -25,13 +25,15 @@ const image = new Image()
 image.src = 'img/map2.bmp'
 
 const playerImgRaw = new Image()
-playerImgRaw.src = 'img/chibi-layered.png'
+playerImgRaw.src = 'img/goblinsword.png'
 const playerImg = {
     img: playerImgRaw,
-    copX: 0,
-    copY: 0,
-    imgWidth: playerImgRaw.width/9, 
-    imgHeight: playerImgRaw.height/3 
+    copXIndex: 0, //* (zombie5ImgRaw.width/3),
+    copYIndex: 0,
+    maxXIndex: 6, //9 imgaes
+    maxYIndex: 4, //2 imgaes, one for each direction.
+    imgWidth: playerImgRaw.width/11, 
+    imgHeight: (playerImgRaw.height/5)
 }
 const zombie5ImgRaw = new Image()
 zombie5ImgRaw.src = 'img/Zombies/5ZombieSpriteSheet.png'
@@ -41,10 +43,13 @@ const zombieImg = {
     img: zombie5ImgRaw,
     // frameX: 0,
     // frameY: 0,
-    copX: 0,
-    copY: 0,
-    imgWidth: zombie5ImgRaw.width/3, 
+    copXIndex: 0, //* (zombie5ImgRaw.width/3),
+    copYIndex: 0,
+    maxXIndex: 3, //3 imgaes
+    maxYIndex: 4, //4 imgaes, one for each direction.
+    imgWidth: (zombie5ImgRaw.width/3), 
     imgHeight: zombie5ImgRaw.height/4,
+    // frameWalking: 
 }
 
 
@@ -53,7 +58,7 @@ console.log('this is the canvas width', game.width)
 console.log('this is the canvas height', game.height)
 
 // Objects are made of properties(K:v pairs) and methods(functions)
-class Sprite {
+class Player {
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
@@ -68,6 +73,163 @@ class Sprite {
         this.shiftynessTimer = 0
         
         p('On creation: '+this.direction)
+        //methods`
+        this.changeDirection = function(sprite, direction) {
+            // p('in the changeDirection \n before the changes')
+            // p(sprite.direction)
+            // p(sprite.direction.up)
+            // p(sprite.direction.down)
+            // p(sprite.direction.right)
+            // p(sprite.direction.left)
+            Object.keys(sprite.direction).forEach(key => {
+                sprite.direction[key] = false;
+            })
+            // p('The changeed string to false')
+            // p(sprite.direction)
+            // p(sprite.direction.up)
+            // p(sprite.direction.down)
+            // p(sprite.direction.right)
+            // p(sprite.direction.left)
+
+            sprite.direction[direction] = true
+            // p('A changeed to true')
+            // p(sprite.direction)
+            // p(sprite.direction.up)
+            // p(sprite.direction.down)
+            // p(sprite.direction.right)
+            // p(sprite.direction.left)
+            // p('made it')
+            // eval(`sprite.direction.${direction} = true`)
+            //Try this in sprite.direction.[direction] = true
+            //this.direction =  direction
+        }
+
+        this.moveByAI = function() {
+            //if change direction
+            this.shiftynessTimer++
+            // p(`shiftynessTimer: ${this.shiftynessTimer}`)
+            if (this.shiftynessTimer === this.shiftyness) {
+                // p('changing direction.')
+                this.shiftynessTimer = 0
+                randomDirectionChange(this)}
+                
+            // p(this.direction)
+            //if direction
+            if (this.direction.up === true) {
+                this.y -= this.speed
+                if (this.y <= 0) { //Need ask about = in <=
+                    this.y = 0
+                    this.changeDirection(this,'down')}
+            } 
+            else if (this.direction.left === true) {
+                this.x -= this.speed
+                if (this.x <= 0 ){
+                    this.x = 0
+                    this.changeDirection(this,'right')}
+            }
+            else if (this.direction.down === true) {
+                this.y += this.speed
+                if (this.y >= game.height){
+                    this.y = game.height
+                    this.changeDirection(this,'up')}
+            }
+            else if (this.direction.right === true) {
+                this.x += this.speed
+                if (this.x >= game.width){
+                    this.x = game.width
+                    this.changeDirection(this,'left')}
+            }
+        }
+        this.move = function () {
+            // p('In the player.move')
+            // p('up: '+this.direction.up)
+            // p('down: '+this.direction.down)
+            // p('right: '+this.direction.right)
+            // p('left: '+this.direction.left)
+            if (this.direction.up === true) {
+                this.y -= this.speed
+                if (this.y <= 0) { //Need ask about = in <=
+                    this.y = 0}
+                else{
+                    this.changeFrame('up')}
+            } 
+            else if (this.direction.left === true) {
+                this.x -= this.speed
+                if (this.x <= 0 ){
+                    this.x = 0}
+                else{
+                    this.changeFrame('left')}
+            }
+            else if (this.direction.down === true) {
+                this.y += this.speed
+                if (this.y >= game.height){
+                    this.y = game.height}
+                else{
+                    this.changeFrame('down')}
+            }
+            else if (this.direction.right === true) {
+                this.x += this.speed
+                if (this.x >= game.width){
+                    this.x = game.width}
+                else{
+                    this.changeFrame('right')}
+            }
+        } 
+        this.render = function () {
+            ctx.fillStyle = this.color
+            // ctx.fillRect(this.x, this.y, this.width, this.height)
+            ctx.drawImage(
+                this.skin.img, 
+                this.skin.copXIndex * (this.skin.imgWidth), 
+                this.skin.copYIndex * (this.skin.imgHeight), 
+                this.skin.imgWidth, 
+                this.skin.imgHeight, 
+                this.x, this.y,
+                this.skin.imgWidth, 
+                this.skin.imgHeight
+                )            
+            }
+        this.changeFrame = function (direction) {
+            //Standing
+            if (direction === 'down'){
+                this.skin.copYIndex = 0
+                this.skin.copXIndex += 1
+            }
+            if (direction === 'up'){
+                this.skin.copYIndex = 2
+                this.skin.copXIndex += 1
+            }
+            if (direction === 'left'){
+                this.skin.copYIndex = 3 
+                this.skin.copXIndex += 1
+            }
+            if (direction === 'right'){
+                this.skin.copYIndex = 1
+                this.skin.copXIndex += 1
+            }
+            if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
+                this.skin.copXIndex = 0
+            }
+            // else { 
+            //     }             
+        }
+    } 
+}
+class Zombie {
+    constructor(x, y, direction, speed, skin, width, height) {
+        this.x = x,
+        this.y = y,
+        this.direction = direction, //I think this will work.
+        this.speed = speed,
+        this.skin = skin,
+        this.width = width,
+        this.height = height
+        
+        this.alive = true,
+        this.shiftyness = shiftynessGlobal
+        this.shiftynessTimer = 0
+        
+        // p('On creation: '+this.direction)
         //methods`
         this.changeDirection = function(sprite, direction) {
             // p('in the changeDirection \n before the changes')
@@ -170,12 +332,22 @@ class Sprite {
             ctx.drawImage(
             //     playerImgRaw, 0,0,playerImgRaw.width/9,playerImgRaw.height/3,this.x,this.y
             // ,playerImgRaw.width/9,playerImgRaw.height/3
-                          this.skin.img, 
-                          this.skin.copX, this.skin.copY, 
-                          this.skin.imgWidth, this.skin.imgHeight, 
-                          this.x, this.y,
-                          this.skin.imgWidth, this.skin.imgHeight
-                          )
+                this.skin.img, 
+                this.skin.copXIndex * (this.skin.imgWidth), 
+                this.skin.copYIndex * (this.skin.imgHeight), 
+                this.skin.imgWidth, 
+                this.skin.imgHeight, 
+                this.x, this.y,
+                this.skin.imgWidth, 
+                this.skin.imgHeight
+                )
+            if (this.skin.copXIndex < (this.skin.maxXIndex - 1)) {
+                this.skin.copXIndex += 1
+            }
+            else { 
+                // p('why I never run')
+                this.skin.copXIndex = 1}
+            // p('Index: '+this.skin.copXIndex+' max: '+this.skin.maxXIndex)
             //working.//               ctx.drawImage(playerImgRaw, 0,0,playerImgRaw.width/9,playerImgRaw.height/3,this.x,this.y
             // ,playerImgRaw.width/9,playerImgRaw.height/3)
                          
@@ -187,14 +359,14 @@ const skinSelector = (skin) => {
 }
 
 //Make players on the board.
-let player = new Sprite(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg, spriteWidth, spriteHeight)
+let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg, spriteWidth, spriteHeight)
 let zombie = []
-for (let i = 0; i < 5; i++){
+for (let i = 0; i < 1; i++){
     // zombie.push(new Sprite(
     //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
     //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
     //     'up', '#bada55', spriteWidth, spriteHeight))
-    zombie.push(new Sprite(
+    zombie.push(new Zombie(
         (game.width/2), 
         (game.height/2), 
         {up:false,down:false,left:false,right:true}, zombieSpeed, zombieImg, spriteWidth, spriteHeight))
@@ -220,7 +392,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            zombie.moveByAI()
+            // zombie.moveByAI()
         }
     })
 }
