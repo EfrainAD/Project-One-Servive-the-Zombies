@@ -176,8 +176,10 @@ class Player {
             }
         } 
         this.render = function () {
-            ctx.fillStyle = this.color
-            // ctx.fillRect(this.x, this.y, this.width, this.height)
+            ctx.fillStyle = 'green'
+            ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x, this.y, this.width, this.height)
             ctx.drawImage(
                 this.skin.img, 
                 this.skin.copXIndex * (this.skin.width), 
@@ -213,15 +215,15 @@ class Player {
         }
     } 
 }
-class Zombie {
+class Zombie { //ClEAN UP - Remove width and height from constructor.
     constructor(x, y, direction, speed, skin, width, height) {
         this.x = x,
         this.y = y,
         this.direction = direction, //I think this will work.
         this.speed = speed,
         this.skin = skin,
-        this.width = width,
-        this.height = height
+        this.width = this.skin.width/4,
+        this.height = this.skin.height/4,
         
         this.alive = true,
         this.shiftyness = shiftynessGlobal
@@ -331,7 +333,10 @@ class Zombie {
             }
         } 
         this.render = function () {
-            ctx.fillStyle = this.color
+            ctx.fillStyle = 'green'
+            ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x, this.y, this.width, this.height)
             ctx.drawImage(
                 this.skin.img, 
                 this.skin.copXIndex * (this.skin.width), 
@@ -545,17 +550,17 @@ const changePlayerDirection = (key) => {
         break
     }
 }
-const detectHit = () => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
-    zombie.filter(zombie => {
-        return zombie.alive === true
-    }).forEach(zombie => {
+const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
+    // zombie.filter(zombie => { //NEED REMOVE DEAD ONES.
+    //     return zombie.alive === true
+    // }).forEach(zombie => {
         if (player.x < zombie.x + zombie.width
             && player.x + player.width > zombie.x
             && player.y < zombie.y + zombie.height
             && player.y + player.height > zombie.y) {
             player.alive = false
         }
-    })
+    // })
 }
 const killZombie = zombie => {
     zombie.alive = false
