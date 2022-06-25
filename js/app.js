@@ -349,8 +349,8 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             }
         } 
         this.render = function () {
-            ctx.fillStyle = 'green'
-            ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+            // ctx.fillStyle = 'green' //box around the img
+            // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
             ctx.fillStyle = 'red'
             ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
             ctx.drawImage(
@@ -424,7 +424,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            zombie.moveByAI()
+            //zombie.moveByAI()
         }
     })
 }
@@ -570,10 +570,10 @@ const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
     // zombie.filter(zombie => { //NEED REMOVE DEAD ONES.
     //     return zombie.alive === true
     // }).forEach(zombie => {
-        if (player.x < zombie.Xsprite + zombie.spriteWidth
-            && player.x + player.width > zombie.Xsprite
-            && player.y < zombie.Ysprite + zombie.spriteHeight
-            && player.y + player.height > zombie.Ysprite) {
+        if (player.Xsprite < zombie.Xsprite + zombie.spriteWidth
+            && player.Xsprite + player.spriteWidth > zombie.Xsprite
+            && player.Ysprite < zombie.Ysprite + zombie.spriteHeight
+            && player.Ysprite + player.spriteHeight > zombie.Ysprite) {
             player.alive = false
         }
     // })
