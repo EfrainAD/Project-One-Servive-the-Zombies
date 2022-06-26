@@ -10,7 +10,7 @@ const shiftynessGlobal = 10
 let keyLock = false
 let keyLast = null
 // const swingRange = spriteHeight + 10 //That is a huge sword.
-const knifeRange = 20
+const knifeRange = 70
 
 // we also need to define our game context
 const ctx = game.getContext('2d')
@@ -460,8 +460,8 @@ const knifeSwing = () => {
     })
     // p("I go past filers? yes")
     p("player.Direction: " + convertDirectionNumber(player))
-    if (player.direction.up === true) {
-        p('am I up?')
+    if (player.facingDirection === 'up') {
+        p('I am facing UP!')
         zombieSearch.forEach(zombie => {
             if ((((player.Xsprite)) < (zombie.Xsprite + zombie.spriteWidth) )  
             && ((((player.Xsprite) + player.spriteWidth)) > (zombie.Xsprite))
@@ -469,28 +469,28 @@ const knifeSwing = () => {
             && ((player.Ysprite - knifeRange) < (zombie.Ysprite + zombie.spriteHeight)))
                 killZombie(zombie)
         })
-    } else if (player.direction.right === true) {
+    } else if (player.facingDirection === 'right') {
         zombieSearch.forEach(zombie => { 
-            if ((((player.x + spriteWidth)) < zombie.x )
-            && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
-            && ((player.y + spriteHeight) > zombie.y)
-            && (player.y < (zombie.y + spriteHeight)))
+            if ((((player.Xsprite + player.spriteWidth)) < zombie.Xsprite )
+            && ((((player.Xsprite + player.spriteWidth) + knifeRange)) > zombie.Xsprite)
+            && ((player.Ysprite + player.spriteHeight) > zombie.Ysprite)
+            && (player.Ysprite < (zombie.Ysprite + zombie.spriteHeight)))
                 killZombie(zombie)
         })
-    } else if (player.direction.down === true) {
+    } else if (player.facingDirection === 'down') {
         zombieSearch.forEach(zombie => {
-            if ((((player.x)) < (zombie.x + spriteWidth) )  
-                && ((((player.x) + spriteWidth)) > (zombie.x))
-                && ((player.y + spriteHeight + knifeRange) > zombie.y)
-                && ((player.y) < (zombie.y)))
+            if ((((player.Xsprite)) < (zombie.Xsprite + zombie.spriteWidth) )  
+                && ((((player.Xsprite) + player.spriteWidth)) > (zombie.Xsprite))
+                && ((player.Ysprite + player.spriteHeight + knifeRange) > zombie.Ysprite)
+                && ((player.Ysprite) < (zombie.Ysprite)))
                     killZombie(zombie)
         })
-    } else if (player.direction.left === true) {
+    } else if (player.facingDirection === "left") {
         zombieSearch.forEach(zombie => {
-            if ((((player.x)) > (zombie.x + spriteWidth) )
-            && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
-            && ((player.y + spriteHeight) > zombie.y)
-            && (player.y < (zombie.y + spriteHeight)))
+            if ((((player.Xsprite)) > (zombie.Xsprite + zombie.spriteWidth) )
+            && ((((player.Xsprite) - knifeRange)) < (zombie.Xsprite + zombie.spriteHeight))
+            && ((player.Ysprite + player.spriteHeight) > zombie.Ysprite)
+            && (player.Ysprite < (zombie.Ysprite + zombie.spriteHeight)))
                 killZombie(zombie)
         })
     }
