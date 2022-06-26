@@ -68,6 +68,7 @@ class Player {
         this.spriteWidth = 34
         this.spriteHeight = 57
         this.direction = direction, //I think this will work.
+        this.facingDirection = direction
         this.speed = speed,
         this.skin = skin,
         this.width = width,
@@ -77,7 +78,7 @@ class Player {
         this.shiftyness = shiftynessGlobal
         this.shiftynessTimer = 0
         
-        p('On creation: '+this.direction)
+        p('On creation: '+this.facingDirection)
         //methods`
         this.changeDirection = function(sprite, direction) {
             // p('in the changeDirection \n before the changes')
@@ -97,6 +98,7 @@ class Player {
             // p(sprite.direction.left)
 
             sprite.direction[direction] = true
+            sprite.facingDirection = direction
             // p('A changeed to true')
             // p(sprite.direction)
             // p(sprite.direction.up)
@@ -434,7 +436,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            zombie.moveByAI()
+            // zombie.moveByAI()
         }
     })
 }
@@ -449,50 +451,53 @@ setInterval(gameLoop, 60)
 })
 
 const knifeSwing = () => {
+    p('swing!')
     let zombieSearch = []
     zombieSearch = zombie.filter(zombie => {
         return zombie.alive === true
     }).filter(zombie => {
         return ((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)
     })
-        p("player.Direction: I would need to make a function for that.")
-        if (player.direction.up === true) {
-            zombieSearch.forEach(zombie => {
-                if ((((player.x)) < (zombie.x + spriteWidth) )  
+    // p("I go past filers? yes")
+    p("player.Direction: " + convertDirectionNumber(player))
+    if (player.direction.up === true) {
+        p('am I up?')
+        zombieSearch.forEach(zombie => {
+            if ((((player.Xsprite)) < (zombie.Xsprite + zombie.spriteWidth) )  
+            && ((((player.Xsprite) + player.spriteWidth)) > (zombie.Xsprite))
+            && ((player.Ysprite + player.spriteHeight) > zombie.Ysprite)
+            && ((player.Ysprite - knifeRange) < (zombie.Ysprite + zombie.spriteHeight)))
+                killZombie(zombie)
+        })
+    } else if (player.direction.right === true) {
+        zombieSearch.forEach(zombie => { 
+            if ((((player.x + spriteWidth)) < zombie.x )
+            && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
+            && ((player.y + spriteHeight) > zombie.y)
+            && (player.y < (zombie.y + spriteHeight)))
+                killZombie(zombie)
+        })
+    } else if (player.direction.down === true) {
+        zombieSearch.forEach(zombie => {
+            if ((((player.x)) < (zombie.x + spriteWidth) )  
                 && ((((player.x) + spriteWidth)) > (zombie.x))
-                && ((player.y + spriteHeight) > zombie.y)
-                && ((player.y - knifeRange) < (zombie.y + spriteHeight)))
+                && ((player.y + spriteHeight + knifeRange) > zombie.y)
+                && ((player.y) < (zombie.y)))
                     killZombie(zombie)
-            })
-        } else if (player.direction.right === true) {
-            zombieSearch.forEach(zombie => { 
-                if ((((player.x + spriteWidth)) < zombie.x )
-                && ((((player.x + spriteWidth) + knifeRange)) > zombie.x)
-                && ((player.y + spriteHeight) > zombie.y)
-                && (player.y < (zombie.y + spriteHeight)))
-                    killZombie(zombie)
-            })
-        } else if (player.direction.down === true) {
-            zombieSearch.forEach(zombie => {
-                if ((((player.x)) < (zombie.x + spriteWidth) )  
-                    && ((((player.x) + spriteWidth)) > (zombie.x))
-                    && ((player.y + spriteHeight + knifeRange) > zombie.y)
-                    && ((player.y) < (zombie.y)))
-                        killZombie(zombie)
-            })
-        } else if (player.direction.left === true) {
-            zombieSearch.forEach(zombie => {
-                if ((((player.x)) > (zombie.x + spriteWidth) )
-                && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
-                && ((player.y + spriteHeight) > zombie.y)
-                && (player.y < (zombie.y + spriteHeight)))
-                    killZombie(zombie)
-            })
-        }
+        })
+    } else if (player.direction.left === true) {
+        zombieSearch.forEach(zombie => {
+            if ((((player.x)) > (zombie.x + spriteWidth) )
+            && ((((player.x) - knifeRange)) < (zombie.x + spriteHeight))
+            && ((player.y + spriteHeight) > zombie.y)
+            && (player.y < (zombie.y + spriteHeight)))
+                killZombie(zombie)
+        })
+    }
 }
 const keyuup = e => {
-    p('\n\n\nThe key been let go!')
-    p('keyLock was on '+keyLock)
+    // p('\n\n\nThe key been let go!')
+    // p('keyLock was on '+keyLock)
     
     switch (e.key) {
         case ('w'):
@@ -504,7 +509,7 @@ const keyuup = e => {
         case ('d'):
         case ('ArrowRight'):
         keyLock = false
-        p('key lock been unlocked: '+keyLock)
+        // p('key lock been unlocked: '+keyLock)
         // break
         // p('keyLock is now '+keyLock)
         // p(`e.key: ${e.key} keyLast: ${keyLast}`)
@@ -514,7 +519,11 @@ const keyuup = e => {
             Object.keys(player.direction).forEach(directionKey => {
                 // p('inside the Forloop')
                 // p('Was direction '+player.direction.directionKey)
-                player.direction[directionKey] = false
+                if (player.direction[directionKey] === true) {
+                    player.facingDirection = directionKey
+                    player.direction[directionKey] = false
+                    return
+                }
                 // p('Changed direction to '+player.direction.directionKey)
             })
             // p('After reset all flase.')
@@ -528,14 +537,14 @@ const keyuup = e => {
 }
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
-    console.log('\n\n\nIn the key down: '+e.key)
+    // console.log('\n\n\nIn the key down: '+e.key)
     if (e.key === ' '){ //spacebar
-        console.log("sing!!!!")
+        // console.log("sing!!!!")
         knifeSwing()
         return
     }
     if (!keyLock){
-        p('not locked')
+        // p('not locked')
         changePlayerDirection(e.key)
     }
     keyLock = true
@@ -551,14 +560,14 @@ const movementHandler = (e) => {
         case ('d'):
         case ('ArrowRight'):
         keyLast = e.key 
-        p('lastkey value given: '+keyLast)
+        // p('lastkey value given: '+keyLast)
         break
     }
     
-    p('check keyLock as been set to true: '+keyLock+'\n')
+    // p('check keyLock as been set to true: '+keyLock+'\n')
 }
 const changePlayerDirection = (key) => {
-    p('The value of the e.key passed to ChaPlayerDir is: ' + key)
+    // p('The value of the e.key passed to ChaPlayerDir is: ' + key)
     switch (key) {
             
         case ('w'):
@@ -612,14 +621,15 @@ const killZombie = zombie => {
     // p('KILLED!!!!!!') 
 } 
 const convertDirectionNumber = (sprite) => {
-    if (sprite.direction.up === true)
+    if (sprite.facingDirection === 'up')
         return 0
-    if (sprite.direction.right === true)
+    if (sprite.facingDirection === 'right')
         return 1
-    if (sprite.direction.down === true)
+    if (sprite.facingDirection === 'down')
         return 2
-    if (sprite.direction.left === true)
+    if (sprite.facingDirection === 'left')
         return 3
+    return "-1"
 } 
 const randomDirectionChange = (sprite) => {
     // p("Inside function")
