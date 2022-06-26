@@ -110,44 +110,7 @@ class Player {
             //Try this in sprite.direction.[direction] = true
             //this.direction =  direction
         }
-
-        this.moveByAI = function() {
-            //if change direction
-            this.shiftynessTimer++
-            // p(`shiftynessTimer: ${this.shiftynessTimer}`)
-            if (this.shiftynessTimer === this.shiftyness) {
-                // p('changing direction.')
-                this.shiftynessTimer = 0
-                randomDirectionChange(this)}
-                
-            // p(this.direction)
-            //if direction
-            if (this.direction.up === true) {
-                this.y -= this.speed
-                if (this.y <= 0) { //Need ask about = in <=
-                    this.y = 0
-                    this.changeDirection(this,'down')}
-            } 
-            else if (this.direction.left === true) {
-                this.x -= this.speed
-                if (this.x <= 0 ){
-                    this.x = 0
-                    this.changeDirection(this,'right')}
-            }
-            else if (this.direction.down === true) {
-                this.y += this.speed
-                if (this.y >= game.height){
-                    this.y = game.height
-                    this.changeDirection(this,'up')}
-            }
-            else if (this.direction.right === true) {
-                this.x += this.speed
-                if (this.x >= game.width){
-                    this.x = game.width
-                    this.changeDirection(this,'left')}
-            }
-        }
-        this.move = function () {
+            this.move = function () {
             // p('In the player.move')
             // p('up: '+this.direction.up)
             // p('down: '+this.direction.down)
@@ -260,6 +223,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             // p(sprite.direction.left)
             Object.keys(sprite.direction).forEach(key => {
                 sprite.direction[key] = false;
+                // p("made " + key + " to "+   sprite.direction[key] )
             })
             // p('The changeed string to false')
             // p(sprite.direction)
@@ -269,6 +233,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             // p(sprite.direction.left)
 
             sprite.direction[direction] = true
+            Object.keys(sprite.direction).forEach(key => {
+                p("is now after change " + key + " to "+   sprite.direction[key] )
+            })
             // p('A changeed to true')
             // p(sprite.direction)
             // p(sprite.direction.up)
@@ -286,7 +253,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             this.shiftynessTimer++
             // p(`shiftynessTimer: ${this.shiftynessTimer}`)
             if (this.shiftynessTimer === this.shiftyness) {
-                // p('changing direction.')
+                p('changing direction.')
                 this.shiftynessTimer = 0
                 randomDirectionChange(this)}
                 
@@ -333,33 +300,6 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
                     this.changeFrame('right')}
             }
         }
-        this.move = function () {
-            // p('In the player.move')
-            // p('up: '+this.direction.up)
-            // p('down: '+this.direction.down)
-            // p('right: '+this.direction.right)
-            // p('left: '+this.direction.left)
-            if (this.direction.up === true) {
-                this.y -= this.speed
-                if (this.y <= 0) { //Need ask about = in <=
-                    this.y = 0}
-            } 
-            else if (this.direction.left === true) {
-                this.x -= this.speed
-                if (this.x <= 0 ){
-                    this.x = 0}
-            }
-            else if (this.direction.down === true) {
-                this.y += this.speed
-                if (this.y >= game.height){
-                    this.y = game.height}
-            }
-            else if (this.direction.right === true) {
-                this.x += this.speed
-                if (this.x >= game.width){
-                    this.x = game.width}
-            }
-        } 
         this.render = function () {
             // ctx.fillStyle = 'green' //box around the img
             // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
@@ -403,7 +343,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
 //Make players on the board.
 let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg, spriteWidth, spriteHeight)
 let zombie = []
-for (let i = 0; i < 1; i++){
+for (let i = 0; i < 5; i++){
     // zombie.push(new Sprite(
     //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
     //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
@@ -439,7 +379,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            // zombie.moveByAI()
+            zombie.moveByAI()
         }
     })
 }
@@ -624,20 +564,31 @@ const killZombie = zombie => {
     // p('KILLED!!!!!!') 
 } 
 const convertDirectionNumber = (sprite) => {
-    if (sprite.facingDirection === 'up')
-        return 0
-    if (sprite.facingDirection === 'right')
-        return 1
-    if (sprite.facingDirection === 'down')
-        return 2
-    if (sprite.facingDirection === 'left')
-        return 3
+    if (sprite.facingDirection){
+        if (sprite.facingDirection === 'up')
+            return 0
+        if (sprite.facingDirection === 'right')
+            return 1
+        if (sprite.facingDirection === 'down')
+            return 2
+        if (sprite.facingDirection === 'left')
+            return 3}
+    else{
+        if (sprite.direction.up === true)
+            return 0
+        if (sprite.direction.right === true)
+            return 1
+        if (sprite.direction.down === true)
+            return 2
+        if (sprite.direction.left === true)
+            return 3
+    }
     return "-1"
 } 
 const randomDirectionChange = (sprite) => {
     // p("Inside function")
     const leftOrRight = Math.round(Math.random())
-    // p("leftOrRigth: " + leftOrRight)
+    p("leftOrRigth: " + leftOrRight)
     let newDirectionInt = null
     if (leftOrRight === 0) {
         newDirectionInt = convertDirectionNumber(sprite) + 3 //no - num
@@ -645,7 +596,7 @@ const randomDirectionChange = (sprite) => {
         newDirectionInt = convertDirectionNumber(sprite) + 1}
     // p("newDirection in Int: "+newDirectionInt)
     newDirectionInt %= 4
-    // p("NDirection %4: "+newDirectionInt)
+    p("NDirection %4: "+newDirectionInt)
 
     if (newDirectionInt === 0){
         sprite.changeDirection(sprite,'up')}
