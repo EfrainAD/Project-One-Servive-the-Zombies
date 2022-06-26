@@ -10,7 +10,7 @@ const shiftynessGlobal = 10
 let keyLock = false
 let keyLast = null
 // const swingRange = spriteHeight + 10 //That is a huge sword.
-const knifeRange = 70
+const knifeRange = 20
 
 // we also need to define our game context
 const ctx = game.getContext('2d')
@@ -425,8 +425,9 @@ const gameLoop = () => {
     // const str = "Zombie X: "+zombie[0].x+"\nZombe Y: "+zombie[0].y
     // p(str)
     zombie.filter(zombie => {
-        zombie.alive === true
+        return zombie.alive === true
     }).forEach(zombie => {
+        p('AAALLLIVE')
         detectHit(zombie)
     })
 
