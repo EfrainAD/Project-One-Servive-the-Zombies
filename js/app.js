@@ -424,7 +424,9 @@ const gameLoop = () => {
     
     // const str = "Zombie X: "+zombie[0].x+"\nZombe Y: "+zombie[0].y
     // p(str)
-    zombie.forEach(zombie => {
+    zombie.filter(zombie => {
+        zombie.alive === true
+    }).forEach(zombie => {
         detectHit(zombie)
     })
 
