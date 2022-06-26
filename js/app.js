@@ -174,7 +174,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         this.spriteHeight =  57
         this.direction = direction, 
         this.speed = speed, 
-        this.skin = skin,
+        this.skin = {...skin},
         // this.width = this.skin.width/4,
         // this.height = this.skin.height/4,
         
