@@ -493,24 +493,38 @@ const knifeSwing = () => {
 const keyuup = e => {
     p('\n\n\nThe key been let go!')
     p('keyLock was on '+keyLock)
-    keyLock = false
-    p('keyLock is now '+keyLock)
-    p(`e.key: ${e.key} keyLast: ${keyLast}`)
-    if (e.key === keyLast) {
-        p('Before reset all to false.')
-        p(player.direction)
-        Object.keys(player.direction).forEach(directionKey => {
-            // p('inside the Forloop')
-            // p('Was direction '+player.direction.directionKey)
-            player.direction[directionKey] = false
-            // p('Changed direction to '+player.direction.directionKey)
-        })
-        p('After reset all flase.')
-        p(player.direction)
-
+    
+    switch (e.key) {
+        case ('w'):
+        case ('ArrowUp'):
+        case ('a'):
+        case ('ArrowLeft'):
+        case ('s'):
+        case ('ArrowDown'):
+        case ('d'):
+        case ('ArrowRight'):
+        keyLock = false
+        p('key lock been unlocked: '+keyLock)
+        // break
+        // p('keyLock is now '+keyLock)
+        // p(`e.key: ${e.key} keyLast: ${keyLast}`)
+        if ((e.key === keyLast)) {
+            // p('Before reset all to false.')
+            // p(player.direction)
+            Object.keys(player.direction).forEach(directionKey => {
+                // p('inside the Forloop')
+                // p('Was direction '+player.direction.directionKey)
+                player.direction[directionKey] = false
+                // p('Changed direction to '+player.direction.directionKey)
+            })
+            // p('After reset all flase.')
+            // p(player.direction)
+            
+        }
+        else {
+            changePlayerDirection(keyLast)
+        }
     }
-    else
-        changePlayerDirection(keyLast)
 }
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
@@ -518,11 +532,15 @@ const movementHandler = (e) => {
     if (e.key === ' '){ //spacebar
         console.log("sing!!!!")
         knifeSwing()
-        return}
+        return
+    }
     if (!keyLock){
         p('not locked')
         changePlayerDirection(e.key)
     }
+    keyLock = true
+    
+    
     switch (e.key) {
         case ('w'):
         case ('ArrowUp'):
@@ -536,7 +554,7 @@ const movementHandler = (e) => {
         p('lastkey value given: '+keyLast)
         break
     }
-    keyLock = true
+    
     p('check keyLock as been set to true: '+keyLock+'\n')
 }
 const changePlayerDirection = (key) => {
