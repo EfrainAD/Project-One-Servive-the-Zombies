@@ -2,15 +2,16 @@ const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
 // const messageBoard = document.getElementById('movement')
 let killCount = 0
-const winCondition = 1
 const playerSpeed = 8
 const zombieSpeed = 3
+const numberOfZombies = 2
+const winCondition = numberOfZombies
 const shiftynessGlobal = 10 //move this out of the Gobal
 let keyLock = false //lock the directional keys untill the direction buttons have been keyed up.
 let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player let go of the direction key he been holding. )
 // const swingRange = spriteHeight + 10 //That is a huge sword.
-const knifeRange = 20 
-let temp = 1
+const knifeRange = 200 
+// let temp = 1
 // we also need to define our game context
 const ctx = game.getContext('2d')
 
@@ -52,8 +53,6 @@ const zombieImg = {
     // frameWalking: 
 }
 
-
-
 console.log('this is the canvas width', game.width)
 console.log('this is the canvas height', game.height)
 
@@ -79,119 +78,91 @@ class Player {
         
         // p('On creation: '+this.facingDirection)
         //methods`
-        this.changeDirection = function(sprite, direction) {
-            // p('in the changeDirection \n before the changes')
-            // p(sprite.direction)
-            // p(sprite.direction.up)
-            // p(sprite.direction.down)
-            // p(sprite.direction.right)
-            // p(sprite.direction.left)
-            Object.keys(sprite.direction).forEach(key => {
-                sprite.direction[key] = false;
-            })
-            // p('The changeed string to false')
-            // p(sprite.direction)
-            // p(sprite.direction.up)
-            // p(sprite.direction.down)
-            // p(sprite.direction.right)
-            // p(sprite.direction.left)
+        
+    }
 
-            sprite.direction[direction] = true
-            sprite.facingDirection = direction
-            // p('A changeed to true')
-            // p(sprite.direction)
-            // p(sprite.direction.up)
-            // p(sprite.direction.down)
-            // p(sprite.direction.right)
-            // p(sprite.direction.left)
-            // p('made it')
-            // eval(`sprite.direction.${direction} = true`)
-            //Try this in sprite.direction.[direction] = true
-            //this.direction =  direction
-        }
-            this.move = function () {
-            // p('In the player.move')
-            // p('up: '+this.direction.up)
-            // p('down: '+this.direction.down)
-            // p('right: '+this.direction.right)
-            // p('left: '+this.direction.left)
-            if (this.direction.up === true) {
-                this.y -= this.speed
-                this.Ysprite -= this.speed
-                if (this.Ysprite <= 0) { //Need ask about = in <=
-                    this.Ysprite = 0 
-                    this.y = -5
-                }
-                else{
-                    this.changeFrame('up')}
-            } 
-            else if (this.direction.left === true) {
-                this.x -= this.speed
-                this.Xsprite -= this.speed
-                if (this.Xsprite <= 0) { //Need ask about = in <=
-                    this.Xsprite = 0 
-                    this.x = -17}
-                else{
-                    this.changeFrame('left')}
+    move = function () {
+        // p('In the player.move')
+        // p('up: '+this.direction.up)
+        // p('down: '+this.direction.down)
+        // p('right: '+this.direction.right)
+        // p('left: '+this.direction.left)
+        if (this.direction.up === true) {
+            this.y -= this.speed
+            this.Ysprite -= this.speed
+            if (this.Ysprite <= 0) { //Need ask about = in <=
+                this.Ysprite = 0 
+                this.y = -5
             }
-            else if (this.direction.down === true) {
-                this.y += this.speed
-                this.Ysprite += this.speed
-                if (this.Ysprite >= game.height){
-                    this.Ysprite = game.height
-                    this.y = game.height - 5}
-                else{
-                    this.changeFrame('down')}
-            }
-            else if (this.direction.right === true) {
-                this.x += this.speed
-                this.Xsprite += this.speed
-                if (this.Xsprite >= game.width){
-                    this.Xsprite = game.width
-                    this.x = game.width - 17}
-                else{
-                    this.changeFrame('right')}
-            }
+            // else{
+                this.changeFrame('up')//}
         } 
-        this.render = function () {
-            ctx.fillStyle = 'green'
-            ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
-            ctx.fillStyle = 'red'
-            ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
-            ctx.drawImage(
-                this.skin.img, 
-                this.skin.copXIndex * (this.skin.width), 
-                this.skin.copYIndex * (this.skin.height), 
-                this.skin.width, 
-                this.skin.height, 
-                this.x, this.y,
-                this.skin.width, 
-                this.skin.height
-                )            
-            }
-        this.changeFrame = function (direction) {
-            //Standing
-            if (direction === 'down'){
-                this.skin.copYIndex = 0
-                this.skin.copXIndex += 1
-            }
-            if (direction === 'up'){
-                this.skin.copYIndex = 2
-                this.skin.copXIndex += 1
-            }
-            if (direction === 'left'){
-                this.skin.copYIndex = 3 
-                this.skin.copXIndex += 1
-            }
-            if (direction === 'right'){
-                this.skin.copYIndex = 1
-                this.skin.copXIndex += 1
-            }
-            if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
-                this.skin.copXIndex = 0
-            }            
+        else if (this.direction.left === true) {
+            this.x -= this.speed
+            this.Xsprite -= this.speed
+            if (this.Xsprite <= 0) { //Need ask about = in <=
+                this.Xsprite = 0 
+                this.x = -17}
+            // else{
+                this.changeFrame('left')//}
+        }
+        else if (this.direction.down === true) {
+            this.y += this.speed
+            this.Ysprite += this.speed
+            if (this.Ysprite >= game.height){
+                this.Ysprite = game.height
+                this.y = game.height - 5}
+            // else{
+                this.changeFrame('down')//}
+        }
+        else if (this.direction.right === true) {
+            this.x += this.speed
+            this.Xsprite += this.speed
+            if (this.Xsprite >= game.width){
+                this.Xsprite = game.width
+                this.x = game.width - 17}
+            // else{
+                this.changeFrame('right')//}
         }
     } 
+    render = function () {
+        ctx.fillStyle = 'green'
+        ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+        ctx.fillStyle = 'red'
+        ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        ctx.drawImage(
+            this.skin.img, 
+            this.skin.copXIndex * (this.skin.width), 
+            this.skin.copYIndex * (this.skin.height), 
+            this.skin.width, 
+            this.skin.height, 
+            this.x, this.y,
+            this.skin.width, 
+            this.skin.height
+            )            
+        }
+    changeFrame = function (direction) {
+        //Standing
+        if (direction === 'down'){
+            this.skin.copYIndex = 0
+            this.skin.copXIndex += 1
+        }
+        if (direction === 'up'){
+            this.skin.copYIndex = 2
+            this.skin.copXIndex += 1
+        }
+        if (direction === 'left'){
+            this.skin.copYIndex = 3 
+            this.skin.copXIndex += 1
+        }
+        if (direction === 'right'){
+            this.skin.copYIndex = 1
+            this.skin.copXIndex += 1
+        }
+        if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
+            this.skin.copXIndex = 0
+        }            
+    }
 }
 class Zombie { //ClEAN UP - Remove width and height from constructor.
     constructor(x, y, direction, speed, skin) {
@@ -201,148 +172,152 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         this.Ysprite = y + 46
         this.spriteWidth = 49
         this.spriteHeight =  57
-        this.direction = direction, //I think this will work.
-        this.speed = speed,
+        this.direction = direction, 
+        this.speed = speed, 
         this.skin = skin,
-        this.width = this.skin.width/4,
-        this.height = this.skin.height/4,
+        // this.width = this.skin.width/4,
+        // this.height = this.skin.height/4,
         
         this.alive = true,
-        this.shiftyness = shiftynessGlobal
+        this.min = 20
+        this.max = 40
+        this.shiftyness = Math.floor(Math.random() * (this.max-this.min))+this.min
         this.shiftynessTimer = 0
         
         // p('On creation: '+this.direction)
         //methods`
-        this.changeDirection = function(sprite, direction) {
-            // p('in the changeDirection \n before the changes')
-            // p(sprite.direction)
-            // p(sprite.direction.up)
-            // p(sprite.direction.down)
-            // p(sprite.direction.right)
-            // p(sprite.direction.left)
-            Object.keys(sprite.direction).forEach(key => {
-                sprite.direction[key] = false;
-                // p("made " + key + " to "+   sprite.direction[key] )
-            })
-            // p('The changeed string to false')
-            // p(sprite.direction)
-            // p(sprite.direction.up)
-            // p(sprite.direction.down)
-            // p(sprite.direction.right)
-            // p(sprite.direction.left)
-
-            sprite.direction[direction] = true
-            Object.keys(sprite.direction).forEach(key => {
-                // p("is now after change " + key + " to "+   sprite.direction[key] )
-            })
-            // p('A changeed to true')
-            // p(sprite.direction)
-            // p(sprite.direction.up)
-            // p(sprite.direction.down)
-            // p(sprite.direction.right)
-            // p(sprite.direction.left)
-            // p('made it')
-            // eval(`sprite.direction.${direction} = true`)
-            //Try this in sprite.direction.[direction] = true
-            //this.direction =  direction
-        }
-
-        this.moveByAI = function() {
-            //if change direction
-            this.shiftynessTimer++
-            // p(`shiftynessTimer: ${this.shiftynessTimer}`)
-            if (this.shiftynessTimer === this.shiftyness) {
-                // p('changing direction.')
-                this.shiftynessTimer = 0
-                randomDirectionChange(this)}
-                
-            // p(this.direction)
-            //if direction
-            if (this.direction.up === true) {
-                this.y -= this.speed
-                this.Ysprite -= this.speed
-                if (this.Ysprite <= 0) { //Need ask about = in <=
-                    this.Ysprite = 0
-                    this.y = -46
-                    this.changeDirection(this,'down')}
-                else{
-                    this.changeFrame('up')}
-            } 
-            else if (this.direction.left === true) {
-                this.x -= this.speed
-                this.Xsprite -= this.speed
-                if (this.Xsprite <= 0 ){
-                    this.Xsprite = 0
-                    this.x = -39
-                    this.changeDirection(this,'right')}
-                else{
-                    this.changeFrame('left')}
-            }
-            else if (this.direction.down === true) {
-                this.y += this.speed
-                this.Ysprite += this.speed
-                if (this.Ysprite >= game.height){
-                    this.Ysprite = game.height
-                    this.y = game.height - 46
-                    this.changeDirection(this,'up')}
-                else{
-                    this.changeFrame('down')}
-            }
-            else if (this.direction.right === true) {
-                this.x += this.speed
-                this.Xsprite += this.speed
-                if (this.Xsprite >= game.width){
-                    this.Xsprite = game.width
-                    this.x = game.width -39
-                    this.changeDirection(this,'left')}
-                else{
-                    this.changeFrame('right')}
-            }
-        }
-        this.render = function () {
-            // ctx.fillStyle = 'green' //box around the img
-            // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
-            ctx.fillStyle = 'red'
-            ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
-            ctx.drawImage(
-                this.skin.img, 
-                this.skin.copXIndex * (this.skin.width), 
-                this.skin.copYIndex * (this.skin.height), 
-                this.skin.width, 
-                this.skin.height, 
-                this.x, this.y,
-                this.skin.width, 
-                this.skin.height
-            )    
-        }
-        this.changeFrame = function (direction) {
-            if (direction === 'down'){
-                this.skin.copYIndex = 6
-                this.skin.copXIndex += 1
-            }
-            if (direction === 'up'){
-                this.skin.copYIndex = 2
-                this.skin.copXIndex += 1
-            }
-            if (direction === 'left'){
-                this.skin.copYIndex = 0 
-                this.skin.copXIndex += 1
-            }
-            if (direction === 'right'){
-                this.skin.copYIndex = 4
-                this.skin.copXIndex += 1
-            }
-            if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
-                this.skin.copXIndex = 0
-            }            
-        }
+        
     } 
+    // changeDirection = function(sprite, direction) {
+    //         // p('in the changeDirection \n before the changes')
+    //         // p(sprite.direction)
+    //         // p(sprite.direction.up)
+    //         // p(sprite.direction.down)
+    //         // p(sprite.direction.right)
+    //         // p(sprite.direction.left)
+    //         Object.keys(sprite.direction).forEach(key => {
+    //             sprite.direction[key] = false;
+    //             // p("made " + key + " to "+   sprite.direction[key] )
+    //         })
+    //         // p('The changeed string to false')
+    //         // p(sprite.direction)
+    //         // p(sprite.direction.up)
+    //         // p(sprite.direction.down)
+    //         // p(sprite.direction.right)
+    //         // p(sprite.direction.left)
+
+    //         sprite.direction[direction] = true
+    //         // this.changeFrame(direction)
+    //         // Object.keys(sprite.direction).forEach(key => {
+    //         //     // p("is now after change " + key + " to "+   sprite.direction[key] )
+    //         // })
+    //         // p('A changeed to true')
+    //         // p(sprite.direction)
+    //         // p(sprite.direction.up)
+    //         // p(sprite.direction.down)
+    //         // p(sprite.direction.right)
+    //         // p(sprite.direction.left)
+    //         // p('made it')
+    //         // eval(`sprite.direction.${direction} = true`)
+    //         //Try this in sprite.direction.[direction] = true
+    //         //this.direction =  direction
+    //     }
+
+    moveByAI = function() {
+        //if change direction
+        this.shiftynessTimer++
+        // p(`shiftynessTimer: ${this.shiftynessTimer}`)
+        if (this.shiftynessTimer === this.shiftyness) {
+            // p('changing direction.')
+            this.shiftynessTimer = 0
+            randomDirectionChange(this)}
+            
+        // p(this.direction)
+        //if direction
+        if (this.direction.up === true) {
+            this.y -= this.speed
+            this.Ysprite -= this.speed
+            if (this.Ysprite <= 0) { //Need ask about = in <=
+                this.Ysprite = 0
+                this.y = -46
+                changeDirection(this,'down')}
+            // else{
+                this.changeFrame('up')//}
+        } 
+        else if (this.direction.left === true) {
+            this.x -= this.speed
+            this.Xsprite -= this.speed
+            if (this.Xsprite <= 0 ){
+                this.Xsprite = 0
+                this.x = -39
+                changeDirection(this,'right')}
+            // else{
+                this.changeFrame('left')//}
+        }
+        else if (this.direction.down === true) {
+            this.y += this.speed
+            this.Ysprite += this.speed
+            if (this.Ysprite >= game.height){
+                this.Ysprite = game.height
+                this.y = game.height - 46
+                changeDirection(this,'up')}
+            // else{
+                this.changeFrame('down')//}
+        }
+        else if (this.direction.right === true) {
+            this.x += this.speed
+            this.Xsprite += this.speed
+            if (this.Xsprite >= game.width){
+                this.Xsprite = game.width
+                this.x = game.width -39
+                changeDirection(this,'left')}
+            // else{
+                this.changeFrame('right')//}
+        }
+    }
+    render = function () {
+        // ctx.fillStyle = 'green' //box around the img
+        // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+        ctx.fillStyle = 'red'
+        ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        ctx.drawImage(
+            this.skin.img, 
+            this.skin.copXIndex * (this.skin.width), 
+            this.skin.copYIndex * (this.skin.height), 
+            this.skin.width, 
+            this.skin.height, 
+            this.x, this.y,
+            this.skin.width, 
+            this.skin.height
+        )    
+    }
+    changeFrame = function (direction) {
+        if (direction === 'down'){
+            this.skin.copYIndex = 6
+            this.skin.copXIndex += 1
+        }
+        if (direction === 'up'){
+            this.skin.copYIndex = 2
+            this.skin.copXIndex += 1
+        }
+        if (direction === 'left'){
+            this.skin.copYIndex = 0 
+            this.skin.copXIndex += 1
+        }
+        if (direction === 'right'){
+            this.skin.copYIndex = 4
+            this.skin.copXIndex += 1
+        }
+        if (this.skin.copXIndex > (this.skin.maxXIndex - 1)) {
+            this.skin.copXIndex = 0
+        }            
+    }
 }
 
 //Make players on the board.
 let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg)
 let zombie = []
-for (let i = 0; i < 1; i++){
+for (let i = 0; i < numberOfZombies; i++){
     // zombie.push(new Sprite(
     //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
     //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
@@ -350,7 +325,8 @@ for (let i = 0; i < 1; i++){
     zombie.push(new Zombie(
         (game.width/2), 
         (game.height/2), 
-        {up:false,down:false,left:true,right:false}, zombieSpeed, zombieImg))
+        {up:false,down:false,left:true,right:false}, //strech start random.
+        zombieSpeed, zombieImg))
 } 
 
 // MAIN FUNCTION \\
@@ -377,10 +353,7 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            while (temp) {
-                temp--
-                zombie.moveByAI()
-            }
+            zombie.moveByAI()
         }
     })
     if (killCount === winCondition){
@@ -511,7 +484,7 @@ const movementHandler = (e) => {
         case ('ArrowRight'):
         keyLast = e.key 
         // p('lastkey value given: '+keyLast)
-        break
+    break
     }
     
     // p('check keyLock as been set to true: '+keyLock+'\n')
@@ -522,7 +495,7 @@ const changePlayerDirection = (key) => {
             
         case ('w'):
         case ('ArrowUp'):
-                player.changeDirection(player, 'up')
+                changeDirection(player, 'up')
                 // player.y -= player.speed
                 // if (player.y <= 0){
                 //     player.y = 0} 
@@ -531,14 +504,14 @@ const changePlayerDirection = (key) => {
         case ('ArrowLeft'):
         // case (40):
             // this moves the player left
-            player.changeDirection(player, 'left')
+            changeDirection(player, 'left')
                 // player.x -= player.speed
             // if (player.x < 0){
             //     player.x = 0}
         break
         case ('s'):
         case ('ArrowDown'):
-            player.changeDirection(player, 'down')
+            changeDirection(player, 'down')
             // player.y += player.speed
             // if (player.y > game.height)
             //     player.y = game.height
@@ -546,7 +519,7 @@ const changePlayerDirection = (key) => {
         case ('d'):
         case ('ArrowRight'):
             // this moves the player to the right
-            player.changeDirection(player, 'right')
+            changeDirection(player, 'right')
             // player.x += player.speed
             // if (player.x > game.width){
             //     player.x = game.width}
@@ -606,13 +579,13 @@ const randomDirectionChange = (sprite) => {
     // p("NDirection %4: "+newDirectionInt)
 
     if (newDirectionInt === 0){
-        sprite.changeDirection(sprite,'up')}
+        changeDirection(sprite,'up')}
     if (newDirectionInt === 1){
-        sprite.changeDirection(sprite,'right')}
+        changeDirection(sprite,'right')}
     if (newDirectionInt === 2){
-        sprite.changeDirection(sprite,'down')}
+        changeDirection(sprite,'down')}
     if (newDirectionInt === 3){
-        sprite.changeDirection(sprite,'left')}
+        changeDirection(sprite,'left')}
 }
 const directionMatch = (sprite, direction) => {
     switch (direction) {
@@ -633,4 +606,36 @@ const directionMatch = (sprite, direction) => {
                 return true 
         break;
     }
+}
+changeDirection = function(sprite, direction) {
+    // p('in the changeDirection \n before the changes')
+    // p(sprite.direction)
+    // p(sprite.direction.up)
+    // p(sprite.direction.down)
+    // p(sprite.direction.right)
+    // p(sprite.direction.left)
+    Object.keys(sprite.direction).forEach(key => {
+        sprite.direction[key] = false;
+    })
+    // p('The changeed string to false')
+    // p(sprite.direction)
+    // p(sprite.direction.up)
+    // p(sprite.direction.down)
+    // p(sprite.direction.right)
+    // p(sprite.direction.left)
+
+    sprite.direction[direction] = true
+    if (sprite.facingDirection){
+        sprite.facingDirection = direction
+    }
+    // p('A changeed to true')
+    // p(sprite.direction)
+    // p(sprite.direction.up)
+    // p(sprite.direction.down)
+    // p(sprite.direction.right)
+    // p(sprite.direction.left)
+    // p('made it')
+    // eval(`sprite.direction.${direction} = true`)
+    //Try this in sprite.direction.[direction] = true
+    //this.direction =  direction
 }
