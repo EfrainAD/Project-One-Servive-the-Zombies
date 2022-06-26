@@ -2,8 +2,6 @@ const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
 // const messageBoard = document.getElementById('movement')
 let killCount = 0
-const spriteHeight = 16
-const spriteWidth = 16
 const playerSpeed = 8
 const zombieSpeed = 3
 const shiftynessGlobal = 10
@@ -60,7 +58,7 @@ console.log('this is the canvas height', game.height)
 
 // Objects are made of properties(K:v pairs) and methods(functions)
 class Player {
-    constructor(x, y, direction, speed, skin, width, height) {
+    constructor(x, y, direction, speed, skin) {
         this.x = x,
         this.y = y,
         this.Xsprite = x + 17 //left and right reach.
@@ -71,14 +69,14 @@ class Player {
         this.facingDirection = direction
         this.speed = speed,
         this.skin = skin,
-        this.width = width,
-        this.height = height
+        // this.width = width,
+        // this.height = height
         
         this.alive = true,
         this.shiftyness = shiftynessGlobal
         this.shiftynessTimer = 0
         
-        p('On creation: '+this.facingDirection)
+        // p('On creation: '+this.facingDirection)
         //methods`
         this.changeDirection = function(sprite, direction) {
             // p('in the changeDirection \n before the changes')
@@ -195,7 +193,7 @@ class Player {
     } 
 }
 class Zombie { //ClEAN UP - Remove width and height from constructor.
-    constructor(x, y, direction, speed, skin, width, height) {
+    constructor(x, y, direction, speed, skin) {
         this.x = x,
         this.y = y,
         this.Xsprite = x + 39 //left and right reach.
@@ -234,7 +232,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
 
             sprite.direction[direction] = true
             Object.keys(sprite.direction).forEach(key => {
-                p("is now after change " + key + " to "+   sprite.direction[key] )
+                // p("is now after change " + key + " to "+   sprite.direction[key] )
             })
             // p('A changeed to true')
             // p(sprite.direction)
@@ -253,7 +251,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
             this.shiftynessTimer++
             // p(`shiftynessTimer: ${this.shiftynessTimer}`)
             if (this.shiftynessTimer === this.shiftyness) {
-                p('changing direction.')
+                // p('changing direction.')
                 this.shiftynessTimer = 0
                 randomDirectionChange(this)}
                 
@@ -341,7 +339,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
 }
 
 //Make players on the board.
-let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg, spriteWidth, spriteHeight)
+let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg)
 let zombie = []
 for (let i = 0; i < 5; i++){
     // zombie.push(new Sprite(
@@ -351,7 +349,7 @@ for (let i = 0; i < 5; i++){
     zombie.push(new Zombie(
         (game.width/2), 
         (game.height/2), 
-        {up:false,down:false,left:true,right:false}, zombieSpeed, zombieImg, spriteWidth, spriteHeight))
+        {up:false,down:false,left:true,right:false}, zombieSpeed, zombieImg))
 } 
 
 // MAIN FUNCTION \\
@@ -367,7 +365,6 @@ const gameLoop = () => {
     zombie.filter(zombie => {
         return zombie.alive === true
     }).forEach(zombie => {
-        p('AAALLLIVE')
         detectHit(zombie)
     })
 
@@ -588,7 +585,7 @@ const convertDirectionNumber = (sprite) => {
 const randomDirectionChange = (sprite) => {
     // p("Inside function")
     const leftOrRight = Math.round(Math.random())
-    p("leftOrRigth: " + leftOrRight)
+    // p("leftOrRigth: " + leftOrRight)
     let newDirectionInt = null
     if (leftOrRight === 0) {
         newDirectionInt = convertDirectionNumber(sprite) + 3 //no - num
@@ -596,7 +593,7 @@ const randomDirectionChange = (sprite) => {
         newDirectionInt = convertDirectionNumber(sprite) + 1}
     // p("newDirection in Int: "+newDirectionInt)
     newDirectionInt %= 4
-    p("NDirection %4: "+newDirectionInt)
+    // p("NDirection %4: "+newDirectionInt)
 
     if (newDirectionInt === 0){
         sprite.changeDirection(sprite,'up')}
