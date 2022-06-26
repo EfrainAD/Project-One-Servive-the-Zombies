@@ -2,14 +2,15 @@ const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
 // const messageBoard = document.getElementById('movement')
 let killCount = 0
+const winCondition = 1
 const playerSpeed = 8
 const zombieSpeed = 3
-const shiftynessGlobal = 10
-let keyLock = false
-let keyLast = null
+const shiftynessGlobal = 10 //move this out of the Gobal
+let keyLock = false //lock the directional keys untill the direction buttons have been keyed up.
+let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player let go of the direction key he been holding. )
 // const swingRange = spriteHeight + 10 //That is a huge sword.
-const knifeRange = 20
-
+const knifeRange = 20 
+let temp = 1
 // we also need to define our game context
 const ctx = game.getContext('2d')
 
@@ -341,7 +342,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
 //Make players on the board.
 let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg)
 let zombie = []
-for (let i = 0; i < 5; i++){
+for (let i = 0; i < 1; i++){
     // zombie.push(new Sprite(
     //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
     //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
@@ -376,9 +377,14 @@ const gameLoop = () => {
     zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
-            zombie.moveByAI()
+            while (temp) {
+                temp--
+                zombie.moveByAI()
+            }
         }
     })
+    if (killCount === winCondition){
+        clearInterval(interval)}
 }
 
 // we're going to do this, when the content loads
@@ -387,7 +393,8 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('keydown', movementHandler)
 document.addEventListener('keyup', keyuup)
     // we also need our game loop running at an interval
-setInterval(gameLoop, 60)
+    interval = setInterval(gameLoop, 60)
+    
 })
 
 const knifeSwing = () => {
@@ -396,7 +403,10 @@ const knifeSwing = () => {
     zombieSearch = zombie.filter(zombie => {
         return zombie.alive === true
     }).filter(zombie => {
-        return ((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie)
+        ///////////////WORKING HERE
+        p('player is getting back '+((convertDirectionNumber(player) + 2) % 4))
+        p('Zombie is getting back '+convertDirectionNumber(zombie))
+        return (((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie))
     })
     // p("I go past filers? yes")
     p("player.Direction: " + convertDirectionNumber(player))
@@ -558,7 +568,7 @@ const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
 const killZombie = zombie => {
     zombie.alive = false
     killCount++
-    // p('KILLED!!!!!!') 
+    p('KILLED!!!!!!') 
 } 
 const convertDirectionNumber = (sprite) => {
     if (sprite.facingDirection){
