@@ -1,12 +1,12 @@
 const game = document.getElementById('canvas')
 const playerSpeed = 8
 let killCount = 0
-const numberOfZombies = 3 //number of zombies in the game.
+const numberOfZombies = 10 //number of zombies in the game.
 const winCondition = numberOfZombies //The number of zombie to win game.
 const zombieSpeed = 3
 let keyLock = false //lock the directional keys untill the direction buttons have been keyed up.
 let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player has not let go of the direction key he been holding.)
-const knifeRange = 40 //Value in px that player can kill a zombie.
+const knifeRange = 20 //Value in px that player can kill a zombie.
 // Far as I can tell this is the paintbrush.
 const ctx = game.getContext('2d')
 
@@ -70,7 +70,7 @@ class Player {
             //this is the image object of the sprite.
         this.skin = skin,
         
-        this.alive = true,
+        this.alive = true
     }
 
     move = function () {
@@ -93,17 +93,17 @@ class Player {
         else if (this.direction.down === true) {
             this.y += this.speed
             this.Ysprite += this.speed
-            if (this.Ysprite >= game.height){
+            if (this.Ysprite >= (game.height - 82)){
                 this.Ysprite = game.height
-                this.y = game.height - 5}
+                this.y = game.height - 5 -82}
             this.changeFrame('down')
         }
         else if (this.direction.right === true) {
             this.x += this.speed
             this.Xsprite += this.speed
-            if (this.Xsprite >= game.width){
+            if (this.Xsprite >= game.width-40){
                 this.Xsprite = game.width
-                this.x = game.width - 17}
+                this.x = game.width - 17-40}
             this.changeFrame('right')
         }
     } 
@@ -220,13 +220,13 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         }
     }
     render = function () {
-        //THIS is still here for if the img is ever changed. You can turn these back on.
-        //     // This to show the actoual img with and hight.
-        // ctx.fillStyle = 'green' //box around the img
-        // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
-        //     // This show the hit/collition box
-        // ctx.fillStyle = 'red'
-        // ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        // THIS is still here for if the img is ever changed. You can turn these back on.
+            // This to show the actoual img with and hight.
+        ctx.fillStyle = 'green' //box around the img
+        ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+            // This show the hit/collition box
+        ctx.fillStyle = 'red'
+        ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
         ctx.drawImage(
             this.skin.img, 
             this.skin.copXIndex * (this.skin.width), 
