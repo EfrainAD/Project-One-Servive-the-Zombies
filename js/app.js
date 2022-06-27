@@ -1,98 +1,94 @@
-const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
-// const messageBoard = document.getElementById('movement')
 const playerSpeed = 8
 let killCount = 0
-const numberOfZombies = 2
-const winCondition = numberOfZombies
+const numberOfZombies = 3 //number of zombies in the game.
+const winCondition = numberOfZombies //The number of zombie to win game.
 const zombieSpeed = 3
 let keyLock = false //lock the directional keys untill the direction buttons have been keyed up.
-let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player let go of the direction key he been holding. )
-// const swingRange = spriteHeight + 10 //That is a huge sword.
-const knifeRange = 50
-// we also need to define our game context
+let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player has not let go of the direction key he been holding.)
+const knifeRange = 40 //Value in px that player can kill a zombie.
+// Far as I can tell this is the paintbrush.
 const ctx = game.getContext('2d')
 
 // so, we have a variable height and width on our canvas, so we need to get that height and width as a reference point so we can do stuff with it later.
 game.width = 528
 game.height = 368
+//Example code has this in there. So I figured it was there for a reason.
 game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
 
+// Images for the sprites in the game. And for the win/lose picture
+    // This the map.
 const image = new Image()
 image.src = 'img/map2.bmp'
+    // This is for the player's sprite with no weapen for the menu.
 const wonPlayer = new Image()
 wonPlayer.src = 'img/goblin.png'
+    // Player Sprite image and Frame values.
 const playerImgRaw = new Image()
 playerImgRaw.src = 'img/goblinsword.png'
 const playerImg = {
     img: playerImgRaw,
-    copXIndex: 0, //* (zombie5ImgRaw.width/3),
+    copXIndex: 0, 
     copYIndex: 0,
-    maxXIndex: 6, //9 imgaes
-    maxYIndex: 4, //2 imgaes, one for each direction.
+    maxXIndex: 6, //9 imgaes For the frames needed
+    maxYIndex: 4, //4 imgaes, one for each direction
     width: playerImgRaw.width/11, 
     height: (playerImgRaw.height/5)
 }
-const zombie5ImgRaw = new Image()
-zombie5ImgRaw.src = 'img/zombie_0.png'
-// zombie5ImgRaw.set_size(0.5)
-// zombie5ImgRaw.height = 30
+    // Zombie Sprite image and Frame value.
+const zombieImageRaw = new Image()
+zombieImageRaw.src = 'img/zombie_0.png'
 const zombieImg = {
-    img: zombie5ImgRaw,
-    // frameX: 0,
-    // frameY: 0,
-    copXIndex: 4, //* (zombie5ImgRaw.width/3),
-    copYIndex: 2, //6: down 0: left 2: up 4:
-    // copYIndex: 0, //6: down, 0: left, 2: up, 4: right
-    maxXIndex: 11, //3 imgaes
+    img: zombieImageRaw,
+    copXIndex: 4, //* (zombieImageRaw.width/3),
+    copYIndex: 2, //6: down, 0: left, 2: up, 4: right
+    maxXIndex: 11, 
     maxYIndex: 6, //4 imgaes, one for each direction.
-    width: (zombie5ImgRaw.width/36), 
-    height: zombie5ImgRaw.height/8,
-    // frameWalking: 
+    width: (zombieImageRaw.width/36), 
+    height: zombieImageRaw.height/8,
 }
 
 console.log('this is the canvas width', game.width)
 console.log('this is the canvas height', game.height)
 
-// Objects are made of properties(K:v pairs) and methods(functions)
+// Class with player's varibles and functions for moving and displaying.
 class Player {
     constructor(x, y, direction, speed, skin) {
-        this.x = x,
+            // Starting point for the img not the sprite.
+        this.x = x, 
         this.y = y,
-        this.Xsprite = x + 17 //left and right reach.
-        this.Ysprite = y + 5     //When adjust the hit box with boundrys do oposite,
+            // This the location of where you can actoually see the sprite.
+            //These value are used for the collition dection and kill range.
+        this.Xsprite = x + 17  //When img is reset for hitting a boundry this need
+        this.Ysprite = y + 5   //to be reset too by these numbers
         this.spriteWidth = 34
         this.spriteHeight = 57
-        this.direction = direction, //I think this will work.
-        this.facingDirection = direction
-        this.speed = speed,
+        this.direction = direction, //this the direction only when moving.
+        this.facingDirection = direction //this is the actoul direction the sprite is facing.
+        this.speed = speed, 
+            //this is the image object of the sprite.
         this.skin = skin,
         
         this.alive = true,
-        this.shiftyness = 10
-        this.shiftynessTimer = 0
     }
 
     move = function () {
         if (this.direction.up === true) {
-            this.y -= this.speed
+            this.y -= this.speed //The player img and hit box need to be moved together
             this.Ysprite -= this.speed
-            if (this.Ysprite <= 0) { //Need ask about = in <=
+            if (this.Ysprite <= 0) { //Need ask about = being <=
                 this.Ysprite = 0 
-                this.y = -5
-            }
-            // else{
-                this.changeFrame('up')//}
+                this.y = -5}
+            this.changeFrame('up') //changeFrame change which img will show.
         } 
         else if (this.direction.left === true) {
-            this.x -= this.speed
+            this.x -= this.speed 
             this.Xsprite -= this.speed
             if (this.Xsprite <= 0) { //Need ask about = in <=
                 this.Xsprite = 0 
                 this.x = -17}
-            // else{
-                this.changeFrame('left')//}
+            this.changeFrame('left')
         }
         else if (this.direction.down === true) {
             this.y += this.speed
@@ -100,8 +96,7 @@ class Player {
             if (this.Ysprite >= game.height){
                 this.Ysprite = game.height
                 this.y = game.height - 5}
-            // else{
-                this.changeFrame('down')//}
+            this.changeFrame('down')
         }
         else if (this.direction.right === true) {
             this.x += this.speed
@@ -109,15 +104,17 @@ class Player {
             if (this.Xsprite >= game.width){
                 this.Xsprite = game.width
                 this.x = game.width - 17}
-            // else{
-                this.changeFrame('right')//}
+            this.changeFrame('right')
         }
     } 
     render = function () {
-        ctx.fillStyle = 'green'
-        ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
-        ctx.fillStyle = 'red'
-        ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        //THIS is still here for if the img is ever changed. You can turn these back on.
+        //     // This to show the actoual img with and hight.
+        // ctx.fillStyle = 'green'
+        // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+        //     // This to show the hit/collition box for the sprite.
+        // ctx.fillStyle = 'red'
+        // ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
         ctx.drawImage(
             this.skin.img, 
             this.skin.copXIndex * (this.skin.width), 
@@ -129,8 +126,10 @@ class Player {
             this.skin.height
             )            
         }
+    // This fucrion will change which frame of the pictuer will be used when rendered
     changeFrame = function (direction) {
-        //Standing
+        //Y is this sprite's direction
+        //X is this sprite movement frame.
         if (direction === 'down'){
             this.skin.copYIndex = 0
             this.skin.copXIndex += 1
@@ -154,79 +153,43 @@ class Player {
 }
 class Zombie { //ClEAN UP - Remove width and height from constructor.
     constructor(x, y, direction, speed, skin) {
+            // Starting point for the img not the sprite.
         this.x = x,
         this.y = y,
-        this.Xsprite = x + 39 //left and right reach.
-        this.Ysprite = y + 46
+            // This the location of where you can actoually see the sprite.
+            // These value are used for the collition dection and kill range.
+        this.Xsprite = x + 39 //When img is reset for hitting a boundry this need
+        this.Ysprite = y + 46 //to be reset too by these numbers
         this.spriteWidth = 49
         this.spriteHeight =  57
         this.direction = direction, 
         this.speed = speed, 
+            // Copy of the object needed her since this object records what frame the sprite is on and there more then one.
         this.skin = {...skin},
-        // this.width = this.skin.width/4,
-        // this.height = this.skin.height/4,
         
         this.alive = true,
-        this.min = 20
-        this.max = 40
+            //Thise values are used to add randomness to the AI. And give each zombie made his own random levels. Min and max give them a ranch can can be at.
+        this.min = 30
+        this.max = 70
         this.shiftyness = Math.floor(Math.random() * (this.max-this.min))+this.min
-        this.shiftynessTimer = 0
+        this.shiftynessTimer = 0 
     } 
-    // changeDirection = function(sprite, direction) {
-    //         // p('in the changeDirection \n before the changes')
-    //         // p(sprite.direction)
-    //         // p(sprite.direction.up)
-    //         // p(sprite.direction.down)
-    //         // p(sprite.direction.right)
-    //         // p(sprite.direction.left)
-    //         Object.keys(sprite.direction).forEach(key => {
-    //             sprite.direction[key] = false;
-    //             // p("made " + key + " to "+   sprite.direction[key] )
-    //         })
-    //         // p('The changeed string to false')
-    //         // p(sprite.direction)
-    //         // p(sprite.direction.up)
-    //         // p(sprite.direction.down)
-    //         // p(sprite.direction.right)
-    //         // p(sprite.direction.left)
-
-    //         sprite.direction[direction] = true
-    //         // this.changeFrame(direction)
-    //         // Object.keys(sprite.direction).forEach(key => {
-    //         //     // p("is now after change " + key + " to "+   sprite.direction[key] )
-    //         // })
-    //         // p('A changeed to true')
-    //         // p(sprite.direction)
-    //         // p(sprite.direction.up)
-    //         // p(sprite.direction.down)
-    //         // p(sprite.direction.right)
-    //         // p(sprite.direction.left)
-    //         // p('made it')
-    //         // eval(`sprite.direction.${direction} = true`)
-    //         //Try this in sprite.direction.[direction] = true
-    //         //this.direction =  direction
-    //     }
-
     moveByAI = function() {
-        //if change direction
+        //checks to see if it's time to randomly change directions. change direction
         this.shiftynessTimer++
-        // p(`shiftynessTimer: ${this.shiftynessTimer}`)
         if (this.shiftynessTimer === this.shiftyness) {
-            // p('changing direction.')
             this.shiftynessTimer = 0
             randomDirectionChange(this)}
-            
-        // p(this.direction)
-        //if direction
+        // The rest will move the zombie in the direction that it is moving in.
+        // the if else are there because this game set to only ever have one direction at a time.
         if (this.direction.up === true) {
-            this.y -= this.speed
+            this.y -= this.speed    //Img and hit box both need to move.
             this.Ysprite -= this.speed
             if (this.Ysprite <= 0) { //Need ask about = in <=
                 this.Ysprite = 0
                 this.y = -46
-                changeDirection(this,'down')}
-            // else{
-                this.changeFrame('up')//}
+                changeDirection(this,'down')}  //unlike player, AI need change direction right away when he hits an object.
+            this.changeFrame('up') //updates what frame being used.
         } 
         else if (this.direction.left === true) {
             this.x -= this.speed
@@ -235,8 +198,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
                 this.Xsprite = 0
                 this.x = -39
                 changeDirection(this,'right')}
-            // else{
-                this.changeFrame('left')//}
+            this.changeFrame('left')
         }
         else if (this.direction.down === true) {
             this.y += this.speed
@@ -245,8 +207,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
                 this.Ysprite = game.height
                 this.y = game.height - 46
                 changeDirection(this,'up')}
-            // else{
-                this.changeFrame('down')//}
+            this.changeFrame('down')
         }
         else if (this.direction.right === true) {
             this.x += this.speed
@@ -255,15 +216,17 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
                 this.Xsprite = game.width
                 this.x = game.width -39
                 changeDirection(this,'left')}
-            // else{
-                this.changeFrame('right')//}
+            this.changeFrame('right')
         }
     }
     render = function () {
+        //THIS is still here for if the img is ever changed. You can turn these back on.
+        //     // This to show the actoual img with and hight.
         // ctx.fillStyle = 'green' //box around the img
         // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
-        ctx.fillStyle = 'red'
-        ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        //     // This show the hit/collition box
+        // ctx.fillStyle = 'red'
+        // ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
         ctx.drawImage(
             this.skin.img, 
             this.skin.copXIndex * (this.skin.width), 
@@ -319,10 +282,6 @@ const gameLoop = () => {
     ctx.clearRect(0, 0, game.width, game.height)
     ctx.drawImage(image, 0,0)
     
-    // messageBoard.textContent = player.x + ', ' + player.y + '\nKills: ' + killCount 
-    
-    // const str = "Zombie X: "+zombie[0].x+"\nZombe Y: "+zombie[0].y
-    // p(str)
     zombie.filter(zombie => {
         return zombie.alive === true
     }).forEach(zombie => {
@@ -396,20 +355,13 @@ document.addEventListener('keyup', keyuup)
 })
 
 const knifeSwing = () => {
-    p('swing!')
     let zombieSearch = []
     zombieSearch = zombie.filter(zombie => {
         return zombie.alive === true
     }).filter(zombie => {
-        ///////////////WORKING HERE
-        p('player is getting back '+((convertDirectionNumber(player) + 2) % 4))
-        p('Zombie is getting back '+convertDirectionNumber(zombie))
         return (((convertDirectionNumber(player) + 2) % 4) !== convertDirectionNumber(zombie))
     })
-    // p("I go past filers? yes")
-    p("player.Direction: " + convertDirectionNumber(player))
     if (player.facingDirection === 'up') {
-        p('I am facing UP!')
         zombieSearch.forEach(zombie => {
             if ((((player.Xsprite)) < (zombie.Xsprite + zombie.spriteWidth) )  
             && ((((player.Xsprite) + player.spriteWidth)) > (zombie.Xsprite))
@@ -444,9 +396,6 @@ const knifeSwing = () => {
     }
 }
 const keyuup = e => {
-    // p('\n\n\nThe key been let go!')
-    // p('keyLock was on '+keyLock)
-    
     switch (e.key) {
         case ('w'):
         case ('ArrowUp'):
@@ -457,26 +406,14 @@ const keyuup = e => {
         case ('d'):
         case ('ArrowRight'):
         keyLock = false
-        // p('key lock been unlocked: '+keyLock)
-        // break
-        // p('keyLock is now '+keyLock)
-        // p(`e.key: ${e.key} keyLast: ${keyLast}`)
         if ((e.key === keyLast)) {
-            // p('Before reset all to false.')
-            // p(player.direction)
             Object.keys(player.direction).forEach(directionKey => {
-                // p('inside the Forloop')
-                // p('Was direction '+player.direction.directionKey)
                 if (player.direction[directionKey] === true) {
                     player.facingDirection = directionKey
                     player.direction[directionKey] = false
                     return
                 }
-                // p('Changed direction to '+player.direction.directionKey)
             })
-            // p('After reset all flase.')
-            // p(player.direction)
-            
         }
         else {
             changePlayerDirection(keyLast)
@@ -485,14 +422,11 @@ const keyuup = e => {
 }
 // this function is going to be how we move our players around
 const movementHandler = (e) => {
-    // console.log('\n\n\nIn the key down: '+e.key)
     if (e.key === ' '){ //spacebar
-        // console.log("sing!!!!")
         knifeSwing()
         return
     }
     if (!keyLock){
-        // p('not locked')
         changePlayerDirection(e.key)
     }
     keyLock = true
@@ -511,50 +445,28 @@ const movementHandler = (e) => {
         // p('lastkey value given: '+keyLast)
     break
     }
-    
-    // p('check keyLock as been set to true: '+keyLock+'\n')
 }
 const changePlayerDirection = (key) => {
-    // p('The value of the e.key passed to ChaPlayerDir is: ' + key)
     switch (key) {
-            
         case ('w'):
         case ('ArrowUp'):
                 changeDirection(player, 'up')
-                // player.y -= player.speed
-                // if (player.y <= 0){
-                //     player.y = 0} 
         break
         case ('a'):
         case ('ArrowLeft'):
-        // case (40):
-            // this moves the player left
             changeDirection(player, 'left')
-                // player.x -= player.speed
-            // if (player.x < 0){
-            //     player.x = 0}
         break
         case ('s'):
         case ('ArrowDown'):
             changeDirection(player, 'down')
-            // player.y += player.speed
-            // if (player.y > game.height)
-            //     player.y = game.height
         break
         case ('d'):
         case ('ArrowRight'):
-            // this moves the player to the right
             changeDirection(player, 'right')
-            // player.x += player.speed
-            // if (player.x > game.width){
-            //     player.x = game.width}
         break
     }
 }
-const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
-    // zombie.filter(zombie => { //NEED REMOVE DEAD ONES.
-    //     return zombie.alive === true
-    // }).forEach(zombie => {
+const detectHit = (zombie) => {
         if (player.Xsprite < zombie.Xsprite + zombie.spriteWidth
             && player.Xsprite + player.spriteWidth > zombie.Xsprite
             && player.Ysprite < zombie.Ysprite + zombie.spriteHeight
@@ -562,12 +474,10 @@ const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
             player.alive = false
             wonGame(false)
         }
-    // })
 }
 const killZombie = zombie => {
     zombie.alive = false
     killCount++
-    p('KILLED!!!!!!') 
 } 
 const convertDirectionNumber = (sprite) => {
     if (sprite.facingDirection){
@@ -592,17 +502,13 @@ const convertDirectionNumber = (sprite) => {
     return "-1"
 } 
 const randomDirectionChange = (sprite) => {
-    // p("Inside function")
     const leftOrRight = Math.round(Math.random())
-    // p("leftOrRigth: " + leftOrRight)
     let newDirectionInt = null
     if (leftOrRight === 0) {
         newDirectionInt = convertDirectionNumber(sprite) + 3 //no - num
     } else { 
         newDirectionInt = convertDirectionNumber(sprite) + 1}
-    // p("newDirection in Int: "+newDirectionInt)
     newDirectionInt %= 4
-    // p("NDirection %4: "+newDirectionInt)
 
     if (newDirectionInt === 0){
         changeDirection(sprite,'up')}
@@ -613,55 +519,32 @@ const randomDirectionChange = (sprite) => {
     if (newDirectionInt === 3){
         changeDirection(sprite,'left')}
 }
-const directionMatch = (sprite, direction) => {
-    switch (direction) {
-        case 'up':
-            if(sprite.direction.up === true)
-                return true            
-        break;
-        case 'down':
-            if(sprite.direction.down === true)
-                return true 
-        break;
-        case 'right':
-            if(sprite.direction.right === true)
-                return true 
-        break;
-        case 'left':
-            if(sprite.direction.left === true)
-                return true 
-        break;
-    }
-}
+// const directionMatch = (sprite, direction) => {
+//     switch (direction) {
+//         case 'up':
+//             if(sprite.direction.up === true)
+//                 return true            
+//         break;
+//         case 'down':
+//             if(sprite.direction.down === true)
+//                 return true 
+//         break;
+//         case 'right':
+//             if(sprite.direction.right === true)
+//                 return true 
+//         break;
+//         case 'left':
+//             if(sprite.direction.left === true)
+//                 return true 
+//         break;
+//     }
+// }
 changeDirection = function(sprite, direction) {
-    // p('in the changeDirection \n before the changes')
-    // p(sprite.direction)
-    // p(sprite.direction.up)
-    // p(sprite.direction.down)
-    // p(sprite.direction.right)
-    // p(sprite.direction.left)
     Object.keys(sprite.direction).forEach(key => {
         sprite.direction[key] = false;
     })
-    // p('The changeed string to false')
-    // p(sprite.direction)
-    // p(sprite.direction.up)
-    // p(sprite.direction.down)
-    // p(sprite.direction.right)
-    // p(sprite.direction.left)
-
     sprite.direction[direction] = true
     if (sprite.facingDirection){
         sprite.facingDirection = direction
     }
-    // p('A changeed to true')
-    // p(sprite.direction)
-    // p(sprite.direction.up)
-    // p(sprite.direction.down)
-    // p(sprite.direction.right)
-    // p(sprite.direction.left)
-    // p('made it')
-    // eval(`sprite.direction.${direction} = true`)
-    //Try this in sprite.direction.[direction] = true
-    //this.direction =  direction
 }
