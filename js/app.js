@@ -1,17 +1,15 @@
 const p = (str) => {console.log(str)}
 const game = document.getElementById('canvas')
 // const messageBoard = document.getElementById('movement')
-let killCount = 0
 const playerSpeed = 8
-const zombieSpeed = 3
+let killCount = 0
 const numberOfZombies = 2
 const winCondition = numberOfZombies
-const shiftynessGlobal = 10 //move this out of the Gobal
+const zombieSpeed = 3
 let keyLock = false //lock the directional keys untill the direction buttons have been keyed up.
 let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player let go of the direction key he been holding. )
 // const swingRange = spriteHeight + 10 //That is a huge sword.
-const knifeRange = 200 
-// let temp = 1
+const knifeRange = 50
 // we also need to define our game context
 const ctx = game.getContext('2d')
 
@@ -23,7 +21,8 @@ game.setAttribute('height', getComputedStyle(game)['height'])
 
 const image = new Image()
 image.src = 'img/map2.bmp'
-
+const wonPlayer = new Image()
+wonPlayer.src = 'img/goblin.png'
 const playerImgRaw = new Image()
 playerImgRaw.src = 'img/goblinsword.png'
 const playerImg = {
@@ -69,24 +68,13 @@ class Player {
         this.facingDirection = direction
         this.speed = speed,
         this.skin = skin,
-        // this.width = width,
-        // this.height = height
         
         this.alive = true,
-        this.shiftyness = shiftynessGlobal
+        this.shiftyness = 10
         this.shiftynessTimer = 0
-        
-        // p('On creation: '+this.facingDirection)
-        //methods`
-        
     }
 
     move = function () {
-        // p('In the player.move')
-        // p('up: '+this.direction.up)
-        // p('down: '+this.direction.down)
-        // p('right: '+this.direction.right)
-        // p('left: '+this.direction.left)
         if (this.direction.up === true) {
             this.y -= this.speed
             this.Ysprite -= this.speed
@@ -183,10 +171,6 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         this.max = 40
         this.shiftyness = Math.floor(Math.random() * (this.max-this.min))+this.min
         this.shiftynessTimer = 0
-        
-        // p('On creation: '+this.direction)
-        //methods`
-        
     } 
     // changeDirection = function(sprite, direction) {
     //         // p('in the changeDirection \n before the changes')
@@ -357,9 +341,50 @@ const gameLoop = () => {
         }
     })
     if (killCount === winCondition){
-        clearInterval(interval)}
+        wonGame(true)}
 }
-
+const wonGame = (ifWon) => {
+    clearInterval(interval)
+    setTimeout(() => {
+        ctx.fillStyle = 'blue'
+        ctx.fillRect(70,30,400,307)
+        ctx.fillStyle = 'green' 
+        ctx.textAlign = 'center'
+        ctx.font = "50px Georgia";
+        if (ifWon){
+            ctx.fillText('You Win!', game.width/2, game.height/3)
+        } else {
+            ctx.fillText('You lost!', game.width/2, game.height/3)}
+        function ifWonPicture(ifWon) {
+            if (ifWon === true)
+                return 2 * (playerImg.width)
+            else {
+                return 4 * (playerImg.width)
+            }
+        }
+        ctx.save()
+        ctx.scale(2,2)
+        ctx.drawImage(
+            wonPlayer, 
+            ifWonPicture(ifWon),
+            4 * (playerImg.height), 
+            playerImg.width, 
+            playerImg.height, 
+            100, 50,
+            playerImg.width, 
+            playerImg.height) 
+        ctx.restore()
+        ctx.font = "20px Georgia";
+        if (ifWon) {
+            ctx.fillText("Goblen Things You for keeping him alive.", game.width/2, game.width/2)
+        } else {
+            ctx.fillText("You got Goblen killed.", game.width/2, game.width/2)}
+        const replay = document.querySelector('#game-ended')
+        replay.style.display = 'inline-block'
+        replay.addEventListener('click', () => {window.location.reload()})
+    }, 1000)
+    
+}
 // we're going to do this, when the content loads
 document.addEventListener('DOMContentLoaded', function () {
     // in here, we need to have our movement handler
@@ -535,6 +560,7 @@ const detectHit = (zombie) => { //CLEAN UP - DOES FILTER ALIVE NEED TO BE HERE?
             && player.Ysprite < zombie.Ysprite + zombie.spriteHeight
             && player.Ysprite + player.spriteHeight > zombie.Ysprite) {
             player.alive = false
+            wonGame(false)
         }
     // })
 }
