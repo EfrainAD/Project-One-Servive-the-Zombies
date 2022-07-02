@@ -109,7 +109,7 @@ class Player {
     } 
     render = function () {
         //THIS is still here for if the img is ever changed. You can turn these back on.
-        //     // This to show the actoual img with and hight.
+            // This to show the actoual img with and hight.
         // ctx.fillStyle = 'green'
         // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
         //     // This to show the hit/collition box for the sprite.
@@ -221,12 +221,12 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
     }
     render = function () {
         // THIS is still here for if the img is ever changed. You can turn these back on.
-            // This to show the actoual img with and hight.
-        ctx.fillStyle = 'green' //box around the img
-        ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
-            // This show the hit/collition box
-        ctx.fillStyle = 'red'
-        ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        //     // This to show the actoual img with and hight.
+        // ctx.fillStyle = 'green' //box around the img
+        // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+        //     // This show the hit/collition box
+        // ctx.fillStyle = 'red'
+        // ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
         ctx.drawImage(
             this.skin.img, 
             this.skin.copXIndex * (this.skin.width), 
