@@ -158,10 +158,10 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         this.y = y,
             // This the location of where you can actoually see the sprite.
             // These value are used for the collition dection and kill range.
-        this.Xsprite = x + 39 //When img is reset for hitting a boundry this need
-        this.Ysprite = y + 46 //to be reset too by these numbers
-        this.spriteWidth = 49
-        this.spriteHeight =  57
+        this.Xsprite = x + 39, //When img is reset for hitting a boundry this need
+        this.Ysprite = y + 46, //to be reset too by these numbers
+        this.spriteWidth = 49,
+        this.spriteHeight =  57,
         this.direction = direction, 
         this.speed = speed, 
             // Copy of the object needed her since this object records what frame the sprite is on and there more then one.
@@ -169,9 +169,9 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         
         this.alive = true,
             //Thise values are used to add randomness to the AI. And give each zombie made his own random levels. Min and max give them a ranch can can be at.
-        this.min = 30
-        this.max = 70
-        this.shiftyness = Math.floor(Math.random() * (this.max-this.min))+this.min
+        this.min = 30,
+        this.max = 70,
+        this.shiftyness = Math.floor(Math.random() * (this.max-this.min))+this.min,
         this.shiftynessTimer = 0 
     } 
     moveByAI = function() {
@@ -220,7 +220,7 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         }
     }
     render = function () {
-        // THIS is still here for if the img is ever changed. You can turn these back on.
+        // THIS IS HERE FOR IF THE IMG IS EVER CHANGED YOU CAN TURN THIS BACK ON.
         //     // This to show the actoual img with and hight.
         // ctx.fillStyle = 'green' //box around the img
         // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
@@ -265,10 +265,6 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
 let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg)
 let zombie = []
 for (let i = 0; i < numberOfZombies; i++){
-    // zombie.push(new Sprite(
-    //     Math.floor(Math.random() * (game.width - (spriteWidth + (10 * 2)))) + 10, 
-    //     Math.floor(Math.random() * (game.height - (spriteHeight + (10 * 2)))) + 10, 
-    //     'up', '#bada55', spriteWidth, spriteHeight))
     zombie.push(new Zombie(
         (game.width/2), 
         (game.height/2), 
@@ -342,16 +338,14 @@ const wonGame = (ifWon) => {
         replay.style.display = 'inline-block'
         replay.addEventListener('click', () => {window.location.reload()})
     }, 1000)
-    
 }
 // we're going to do this, when the content loads
 document.addEventListener('DOMContentLoaded', function () {
     // in here, we need to have our movement handler
-document.addEventListener('keydown', movementHandler)
-document.addEventListener('keyup', keyuup)
+    document.addEventListener('keydown', movementHandler)
+    document.addEventListener('keyup', keyuup)
     // we also need our game loop running at an interval
     interval = setInterval(gameLoop, 60)
-    
 })
 
 const knifeSwing = () => {
@@ -431,7 +425,6 @@ const movementHandler = (e) => {
     }
     keyLock = true
     
-    
     switch (e.key) {
         case ('w'):
         case ('ArrowUp'):
@@ -442,7 +435,6 @@ const movementHandler = (e) => {
         case ('d'):
         case ('ArrowRight'):
         keyLast = e.key 
-        // p('lastkey value given: '+keyLast)
     break
     }
 }
@@ -467,13 +459,13 @@ const changePlayerDirection = (key) => {
     }
 }
 const detectHit = (zombie) => {
-        if (player.Xsprite < zombie.Xsprite + zombie.spriteWidth
-            && player.Xsprite + player.spriteWidth > zombie.Xsprite
-            && player.Ysprite < zombie.Ysprite + zombie.spriteHeight
-            && player.Ysprite + player.spriteHeight > zombie.Ysprite) {
-            player.alive = false
-            wonGame(false)
-        }
+    if (player.Xsprite < zombie.Xsprite + zombie.spriteWidth
+        && player.Xsprite + player.spriteWidth > zombie.Xsprite
+        && player.Ysprite < zombie.Ysprite + zombie.spriteHeight
+        && player.Ysprite + player.spriteHeight > zombie.Ysprite) {
+        player.alive = false
+        wonGame(false)
+    }
 }
 const killZombie = zombie => {
     zombie.alive = false
@@ -519,26 +511,6 @@ const randomDirectionChange = (sprite) => {
     if (newDirectionInt === 3){
         changeDirection(sprite,'left')}
 }
-// const directionMatch = (sprite, direction) => {
-//     switch (direction) {
-//         case 'up':
-//             if(sprite.direction.up === true)
-//                 return true            
-//         break;
-//         case 'down':
-//             if(sprite.direction.down === true)
-//                 return true 
-//         break;
-//         case 'right':
-//             if(sprite.direction.right === true)
-//                 return true 
-//         break;
-//         case 'left':
-//             if(sprite.direction.left === true)
-//                 return true 
-//         break;
-//     }
-// }
 changeDirection = function(sprite, direction) {
     Object.keys(sprite.direction).forEach(key => {
         sprite.direction[key] = false;
