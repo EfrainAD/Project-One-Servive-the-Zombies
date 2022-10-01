@@ -1,4 +1,6 @@
-const game = document.getElementById('canvas')
+// map is the background, and sprite is everryting that goes on top.
+const map = document.getElementById('map')
+const sprite = document.getElementById('sprite')
 const playerSpeed = 8
 let killCount = 0
 const numberOfZombies = 10 //number of zombies in the game.
@@ -8,14 +10,19 @@ let keyLock = false //lock the directional keys untill the direction buttons hav
 let keyLast = null //Keep track of the last direction key was press for when the keylock has been set to false (as in the player has not let go of the direction key he been holding.)
 const knifeRange = 20 //Value in px that player can kill a zombie.
 // Far as I can tell this is the paintbrush.
-const ctx = game.getContext('2d')
+const ctxMap = map.getContext('2d')
+const ctxSprite = sprite.getContext('2d')
 
 // so, we have a variable height and width on our canvas, so we need to get that height and width as a reference point so we can do stuff with it later.
-game.width = 528
-game.height = 368
+map.width = 528
+map.height = 368
+sprite.width = 528
+sprite.height = 368
 //Example code has this in there. So I figured it was there for a reason.
-game.setAttribute('width', getComputedStyle(game)['width'])
-game.setAttribute('height', getComputedStyle(game)['height'])
+map.setAttribute('width', getComputedStyle(map)['width'])
+map.setAttribute('height', getComputedStyle(map)['height'])
+sprite.setAttribute('width', getComputedStyle(sprite))['width'])
+sprite.setAttribute('height', getComputedStyle(sprite)['height'])
 
 // Images for the sprites in the game. And for the win/lose picture
     // This the map.
@@ -49,8 +56,8 @@ const zombieImg = {
     height: zombieImageRaw.height/8,
 }
 
-console.log('this is the canvas width', game.width)
-console.log('this is the canvas height', game.height)
+console.log('this is the canvas width', map.width)
+console.log('this is the canvas height', map.height)
 
 // Class with player's varibles and functions for moving and displaying.
 class Player {
@@ -93,29 +100,29 @@ class Player {
         else if (this.direction.down === true) {
             this.y += this.speed
             this.Ysprite += this.speed
-            if (this.Ysprite >= (game.height - 82)){
-                this.Ysprite = game.height
-                this.y = game.height - 5 -82}
+            if (this.Ysprite >= (map.height - 82)){
+                this.Ysprite = map.height
+                this.y = map.height - 5 -82}
             this.changeFrame('down')
         }
         else if (this.direction.right === true) {
             this.x += this.speed
             this.Xsprite += this.speed
-            if (this.Xsprite >= game.width-40){
-                this.Xsprite = game.width
-                this.x = game.width - 17-40}
+            if (this.Xsprite >= map.width-40){
+                this.Xsprite = map.width
+                this.x = map.width - 17-40}
             this.changeFrame('right')
         }
     } 
     render = function () {
         //THIS is still here for if the img is ever changed. You can turn these back on.
             // This to show the actoual img with and hight.
-        // ctx.fillStyle = 'green'
-        // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+        // ctxSprite.fillStyle = 'green'
+        // ctxSprite.fillRect(this.x, this.y, this.skin.width, this.skin.height)
         //     // This to show the hit/collition box for the sprite.
-        // ctx.fillStyle = 'red'
-        // ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
-        ctx.drawImage(
+        // ctxSprite.fillStyle = 'red'
+        // ctxSprite.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        ctxSprite.drawImage(
             this.skin.img, 
             this.skin.copXIndex * (this.skin.width), 
             this.skin.copYIndex * (this.skin.height), 
@@ -203,18 +210,18 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
         else if (this.direction.down === true) {
             this.y += this.speed
             this.Ysprite += this.speed
-            if (this.Ysprite >= game.height){
-                this.Ysprite = game.height
-                this.y = game.height - 46
+            if (this.Ysprite >= map.height){
+                this.Ysprite = map.height
+                this.y = map.height - 46
                 changeDirection(this,'up')}
             this.changeFrame('down')
         }
         else if (this.direction.right === true) {
             this.x += this.speed
             this.Xsprite += this.speed
-            if (this.Xsprite >= game.width){
-                this.Xsprite = game.width
-                this.x = game.width -39
+            if (this.Xsprite >= map.width){
+                this.Xsprite = map.width
+                this.x = map.width -39
                 changeDirection(this,'left')}
             this.changeFrame('right')
         }
@@ -222,12 +229,12 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
     render = function () {
         // THIS IS HERE FOR IF THE IMG IS EVER CHANGED YOU CAN TURN THIS BACK ON.
         //     // This to show the actoual img with and hight.
-        // ctx.fillStyle = 'green' //box around the img
-        // ctx.fillRect(this.x, this.y, this.skin.width, this.skin.height)
+        // ctxSprite.fillStyle = 'green' //box around the img
+        // ctxSprite.fillRect(this.x, this.y, this.skin.width, this.skin.height)
         //     // This show the hit/collition box
-        // ctx.fillStyle = 'red'
-        // ctx.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
-        ctx.drawImage(
+        // ctxSprite.fillStyle = 'red'
+        // ctxSprite.fillRect(this.Xsprite, this.Ysprite, this.spriteWidth, this.spriteHeight)
+        ctxSprite.drawImage(
             this.skin.img, 
             this.skin.copXIndex * (this.skin.width), 
             this.skin.copYIndex * (this.skin.height), 
@@ -262,21 +269,20 @@ class Zombie { //ClEAN UP - Remove width and height from constructor.
 }
 
 //Make players on the board.
-let player = new Player(100, game.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg)
+let player = new Player(100, map.height/4, {up:false,down:false,left:false,right:false}, playerSpeed, playerImg)
 let zombie = []
 for (let i = 0; i < numberOfZombies; i++){
     zombie.push(new Zombie(
-        (game.width/2), 
-        (game.height/2), 
+        (map.width/2), 
+        (map.height/2), 
         {up:false,down:false,left:true,right:false}, //strech start random.
         zombieSpeed, zombieImg))
 } 
 
 // MAIN FUNCTION \\
 const gameLoop = () => {
-    
-    ctx.clearRect(0, 0, game.width, game.height)
-    ctx.drawImage(image, 0,0)
+    ctxMap.clearRect(0, 0, map.width, map.height)
+    ctxMap.drawImage(image, 0,0)
     
     zombie.filter(zombie => {
         return zombie.alive === true
@@ -301,15 +307,15 @@ const gameLoop = () => {
 const wonGame = (ifWon) => {
     clearInterval(interval)
     setTimeout(() => {
-        ctx.fillStyle = 'blue'
-        ctx.fillRect(70,30,400,307)
-        ctx.fillStyle = 'green' 
-        ctx.textAlign = 'center'
-        ctx.font = "50px Georgia";
+        ctxMap.fillStyle = 'blue'
+        ctxMap.fillRect(70,30,400,307)
+        ctxMap.fillStyle = 'green' 
+        ctxMap.textAlign = 'center'
+        ctxMap.font = "50px Georgia";
         if (ifWon){
-            ctx.fillText('You Win!', game.width/2, game.height/3)
+            ctxMap.fillText('You Win!', map.width/2, map.height/3)
         } else {
-            ctx.fillText('You lost!', game.width/2, game.height/3)}
+            ctxMap.fillText('You lost!', map.width/2, map.height/3)}
         function ifWonPicture(ifWon) {
             if (ifWon === true)
                 return 2 * (playerImg.width)
@@ -317,9 +323,9 @@ const wonGame = (ifWon) => {
                 return 4 * (playerImg.width)
             }
         }
-        ctx.save()
-        ctx.scale(2,2)
-        ctx.drawImage(
+        ctxMap.save()
+        ctxMap.scale(2,2)
+        ctxSprite.drawImage(
             wonPlayer, 
             ifWonPicture(ifWon),
             4 * (playerImg.height), 
@@ -328,12 +334,12 @@ const wonGame = (ifWon) => {
             100, 50,
             playerImg.width, 
             playerImg.height) 
-        ctx.restore()
-        ctx.font = "20px Georgia";
+        ctxMap.restore()
+        ctxMap.font = "20px Georgia";
         if (ifWon) {
-            ctx.fillText("Goblen Things You for keeping him alive.", game.width/2, game.width/2)
+            ctxMap.fillText("Goblen Things You for keeping him alive.", map.width/2, map.width/2)
         } else {
-            ctx.fillText("You got Goblen killed.", game.width/2, game.width/2)}
+            ctxMap.fillText("You got Goblen killed.", map.width/2, map.width/2)}
         const replay = document.querySelector('#game-ended')
         replay.style.display = 'inline-block'
         replay.addEventListener('click', () => {window.location.reload()})
