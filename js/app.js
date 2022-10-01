@@ -18,15 +18,26 @@ game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
 
 // Images for the sprites in the game. And for the win/lose picture
+var onImgLoad = function() {
+    var imgToLoad = 4, imgLoaded = 0;
+    imgLoaded++;
+    if(imgLoaded == imgToLoad){
+
+    }
+}
     // This the map.
 const image = new Image()
 image.src = 'img/map2.bmp'
+image.onload = onImgLoad
     // This is for the player's sprite with no weapen for the menu.
 const wonPlayer = new Image()
 wonPlayer.src = 'img/goblin.png'
+wonPlayer.onload = onImgLoad
     // Player Sprite image and Frame values.
 const playerImgRaw = new Image()
 playerImgRaw.src = 'img/goblinsword.png'
+playerImgRaw.onload = onImgLoad
+// console.log(playerImgRaw.src)
 const playerImg = {
     img: playerImgRaw,
     copXIndex: 0, 
@@ -36,6 +47,7 @@ const playerImg = {
     width: playerImgRaw.width/11, 
     height: (playerImgRaw.height/5)
 }
+// console.log(playerImg.img.src)
     // Zombie Sprite image and Frame value.
 const zombieImageRaw = new Image()
 zombieImageRaw.src = 'img/zombie_0.png'
@@ -271,32 +283,47 @@ for (let i = 0; i < numberOfZombies; i++){
         {up:false,down:false,left:true,right:false}, //strech start random.
         zombieSpeed, zombieImg))
 } 
-
 // MAIN FUNCTION \\
 const gameLoop = () => {
+    const drawMap = () => {
+        ctx.clearRect(0, 0, game.width, game.height)
+        ctx.drawImage(image, 0,0)
+        drawZombie()
+    }
     
-    ctx.clearRect(0, 0, game.width, game.height)
-    ctx.drawImage(image, 0,0)
-    
+    const drawZombie = () => {
     zombie.filter(zombie => {
         return zombie.alive === true
     }).forEach(zombie => {
         detectHit(zombie)
-    })
-
-    if (player.alive === true) {
-        player.render()
-        player.move()
-    } 
-
-    zombie.forEach(zombie => {
         if (zombie.alive === true) {
             zombie.render()
             zombie.moveByAI()
         }
     })
+    // .forEach(zombie => {
+    //     if (zombie.alive === true) {
+    //         zombie.render()
+    //         zombie.moveByAI()
+    //     }
+    // })
+    drawPlayer()
+    }
+    const drawPlayer = () => {
+    if (player.alive === true) {
+        player.render()
+        player.move()
+    } }
+
+    // zombie.forEach(zombie => {
+    //     if (zombie.alive === true) {
+    //         zombie.render()
+    //         zombie.moveByAI()
+    //     }
+    // })
     if (killCount === winCondition){
         wonGame(true)}
+    drawMap()
 }
 const wonGame = (ifWon) => {
     clearInterval(interval)
@@ -339,15 +366,6 @@ const wonGame = (ifWon) => {
         replay.addEventListener('click', () => {window.location.reload()})
     }, 1000)
 }
-// we're going to do this, when the content loads
-document.addEventListener('DOMContentLoaded', function () {
-    // in here, we need to have our movement handler
-    document.addEventListener('keydown', movementHandler)
-    document.addEventListener('keyup', keyuup)
-    // we also need our game loop running at an interval
-    interval = setInterval(gameLoop, 60)
-})
-
 const knifeSwing = () => {
     let zombieSearch = []
     zombieSearch = zombie.filter(zombie => {
@@ -520,3 +538,14 @@ changeDirection = function(sprite, direction) {
         sprite.facingDirection = direction
     }
 }
+// we're going to do this, when the content loads
+// window.onload = function () {
+// document.addEventListener('DOMContentLoaded', function () {
+const runGame = () => {
+    // in here, we need to have our movement handler
+    document.addEventListener('keydown', movementHandler)
+    document.addEventListener('keyup', keyuup)
+    // we also need our game loop running at an interval
+    interval = setInterval(gameLoop, 60)
+}
+)
