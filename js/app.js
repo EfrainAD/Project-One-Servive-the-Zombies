@@ -19,35 +19,15 @@ game.setAttribute('height', getComputedStyle(game)['height'])
 
 // Images for the sprites in the game. And for the win/lose picture
     // This the map.
-const image = new Image()
-image.src = 'img/map2.bmp'
+let image = null
     // This is for the player's sprite with no weapen for the menu.
-const wonPlayer = new Image()
-wonPlayer.src = 'img/goblin.png'
+let wonPlayer = null
     // Player Sprite image and Frame values.
-const playerImgRaw = new Image()
-playerImgRaw.src = 'img/goblinsword.png'
-const playerImg = {
-    img: playerImgRaw,
-    copXIndex: 0, 
-    copYIndex: 0,
-    maxXIndex: 6, //9 imgaes For the frames needed
-    maxYIndex: 4, //4 imgaes, one for each direction
-    width: playerImgRaw.width/11, 
-    height: (playerImgRaw.height/5)
-}
+let playerImgRaw = null
+let playerImg = null
     // Zombie Sprite image and Frame value.
-const zombieImageRaw = new Image()
-zombieImageRaw.src = 'img/zombie_0.png'
-const zombieImg = {
-    img: zombieImageRaw,
-    copXIndex: 4, //* (zombieImageRaw.width/3),
-    copYIndex: 2, //6: down, 0: left, 2: up, 4: right
-    maxXIndex: 11, 
-    maxYIndex: 6, //4 imgaes, one for each direction.
-    width: (zombieImageRaw.width/36), 
-    height: zombieImageRaw.height/8,
-}
+let zombieImageRaw = null
+let zombieImg = null
 
 console.log('this is the canvas width', game.width)
 console.log('this is the canvas height', game.height)
@@ -339,15 +319,6 @@ const wonGame = (ifWon) => {
         replay.addEventListener('click', () => {window.location.reload()})
     }, 1000)
 }
-// we're going to do this, when the content loads
-document.addEventListener('DOMContentLoaded', function () {
-    // in here, we need to have our movement handler
-    document.addEventListener('keydown', movementHandler)
-    document.addEventListener('keyup', keyuup)
-    // we also need our game loop running at an interval
-    interval = setInterval(gameLoop, 60)
-})
-
 const knifeSwing = () => {
     let zombieSearch = []
     zombieSearch = zombie.filter(zombie => {
@@ -520,3 +491,43 @@ changeDirection = function(sprite, direction) {
         sprite.facingDirection = direction
     }
 }
+// we're going to do this, when the content loads
+document.addEventListener('DOMContentLoaded', function () {
+    // Images for the sprites in the game. And for the win/lose picture
+    // This the map.
+    image = new Image()
+    image.src = document.querySelector('#image').backgroundImage
+        // This is for the player's sprite with no weapen for the menu.
+    wonPlayer = new Image()
+    wonPlayer.src = document.querySelector('#wonPlayer').style.backgroundImage
+        // Player Sprite image and Frame values.
+    playerImgRaw = new Image()
+    playerImgRaw.src = document.querySelector('#playerImgRaw').style.backgroundImage
+    console.log('hi,', playerImgRaw.src)
+    zombieImageRaw = new Image()
+    zombieImageRaw.src = document.querySelector('#zombieImageRaw').style.backgroundImage
+    const playerImg = {
+        img: playerImgRaw,
+        copXIndex: 0, 
+        copYIndex: 0,
+        maxXIndex: 6, //9 imgaes For the frames needed
+        maxYIndex: 4, //4 imgaes, one for each direction
+        width: playerImgRaw.width/11, 
+        height: (playerImgRaw.height/5)
+    }
+        // Zombie Sprite image and Frame value.
+    const zombieImg = {
+        img: zombieImageRaw,
+        copXIndex: 4, //* (zombieImageRaw.width/3),
+        copYIndex: 2, //6: down, 0: left, 2: up, 4: right
+        maxXIndex: 11, 
+        maxYIndex: 6, //4 imgaes, one for each direction.
+        width: (zombieImageRaw.width/36), 
+        height: zombieImageRaw.height/8,
+    }    
+    // in here, we need to have our movement handler
+    document.addEventListener('keydown', movementHandler)
+    document.addEventListener('keyup', keyuup)
+    // we also need our game loop running at an interval
+    interval = setInterval(gameLoop, 60)
+})

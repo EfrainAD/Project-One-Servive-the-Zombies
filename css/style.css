@@ -12,7 +12,9 @@ body {
   /* background-size: cover;
   background-repeat: space; */
 }
-
+img {
+  display: hidden;
+}
 canvas {
   /* background-image: url('../img/stone.png'); */
   /* background-repeat: repeat; */
