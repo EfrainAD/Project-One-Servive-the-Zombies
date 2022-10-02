@@ -33,8 +33,8 @@ const playerImg = {
     copYIndex: 0,
     maxXIndex: 6, //9 imgaes For the frames needed
     maxYIndex: 4, //4 imgaes, one for each direction
-    width: playerImgRaw.width/11, 
-    height: (playerImgRaw.height/5)
+    width: 64, //64 playerImgRaw.width/11
+    height: 64 //64 playerImgRaw.height/5
 }
     // Zombie Sprite image and Frame value.
 const zombieImageRaw = new Image()
@@ -45,8 +45,8 @@ const zombieImg = {
     copYIndex: 2, //6: down, 0: left, 2: up, 4: right
     maxXIndex: 11, 
     maxYIndex: 6, //4 imgaes, one for each direction.
-    width: (zombieImageRaw.width/36), 
-    height: zombieImageRaw.height/8,
+    width: 128, //128 zombieImageRaw.width/36 
+    height: 128, //128 zombieImageRaw.height/8
 }
 
 console.log('this is the canvas width', game.width)
